@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin | xodisharemix.com</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body class="admin-page">
+  <div id="pageLoader" class="page-loader"><div class="spinner"></div></div>
+
+  <main class="admin-shell">
+    <section id="adminLoginBox" class="pin-auth-card admin-auth-card" style="display:none; margin: 40px auto;">
+      <aside class="pin-auth-visual">
+        <img src="/profile.jpg" alt="background" />
+        <div class="pin-auth-overlay"></div>
+        <div class="pin-auth-copy">
+          <h2>Admin Panel</h2>
+          <p>Control users and uploaded songs.</p>
+        </div>
+      </aside>
+      <section class="pin-auth-form-wrap">
+        <h1>Admin Login</h1>
+        <p class="muted">Authorized access only</p>
+        <form id="adminLoginForm" class="form pin-form">
+          <input id="adminUsername" class="input" type="text" placeholder="Username" required />
+          <input id="adminPassword" class="input" type="password" placeholder="Password" required />
+          <button class="btn btn-primary pin-btn" type="submit">Login as Admin</button>
+        </form>
+      </section>
+    </section>
+
+    <section id="adminPanel" style="display:none;">
+      <div class="admin-layout">
+        <aside class="admin-sidebar">
+          <div>
+            <a class="admin-brand" href="/index.html">
+              <img src="/assets/logo.jpg" alt="logo" />
+              <div>
+                <strong>xodisharemix</strong>
+                <span>Admin Panel</span>
+              </div>
+            </a>
+
+            <nav class="admin-nav">
+              <a href="#overviewSection" class="active admin-nav-link">Overview</a>
+              <a href="#usersSection" class="admin-nav-link">Users</a>
+              <a href="#songsSection" class="admin-nav-link">Songs</a>
+              <a href="/dashboard.html" class="admin-nav-link">Uploader</a>
+              <a href="/player.html" class="admin-nav-link">Player</a>
+              <a href="/index.html" class="admin-nav-link">Main Site</a>
+            </nav>
+          </div>
+
+          <div class="admin-sidebar-foot">Management Console v1</div>
+        </aside>
+
+        <div class="admin-main">
+          <header class="admin-topbar">
+            <div>
+              <h2>Analytics Dashboard</h2>
+              <p>Monitor users and track uploads in real time.</p>
+            </div>
+            <div class="admin-top-actions">
+              <a href="/index.html" class="btn btn-ghost">Home</a>
+              <button data-theme-toggle class="btn btn-ghost">Theme</button>
+              <button id="adminLogoutBtn" class="btn btn-primary">Logout</button>
+            </div>
+          </header>
+
+          <section id="overviewSection" class="admin-stats">
+            <article class="admin-stat-card">
+              <span>Total Users</span>
+              <h3 id="userCount">0</h3>
+            </article>
+            <article class="admin-stat-card">
+              <span>Verified Users</span>
+              <h3 id="verifiedCount">0</h3>
+            </article>
+            <article class="admin-stat-card">
+              <span>Total Songs</span>
+              <h3 id="songCount">0</h3>
+            </article>
+            <article class="admin-stat-card">
+              <span>Recent Uploads (7d)</span>
+              <h3 id="recentSongCount">0</h3>
+            </article>
+          </section>
+
+          <section class="admin-overview-grid">
+            <article class="admin-chart-card">
+              <div class="admin-table-head">
+                <h3>Platform Growth</h3>
+              </div>
+              <div class="admin-chart-area">
+                <div class="admin-chart-line"></div>
+              </div>
+            </article>
+            <article class="admin-chart-card">
+              <div class="admin-table-head">
+                <h3>Quick Actions</h3>
+              </div>
+              <div class="admin-quick-actions">
+                <a href="#usersSection" class="btn btn-ghost">Manage Users</a>
+                <a href="#songsSection" class="btn btn-ghost">Manage Songs</a>
+                <a href="/dashboard.html" class="btn btn-ghost">Upload Page</a>
+                <a href="/player.html" class="btn btn-ghost">Open Player</a>
+              </div>
+            </article>
+          </section>
+
+          <section id="usersSection" class="admin-table-card">
+            <div class="admin-table-head">
+              <h3>Registered Users</h3>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr><th>Email</th><th>Status</th><th>Created</th><th>Action</th></tr>
+                </thead>
+                <tbody id="usersBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="songsSection" class="admin-table-card">
+            <div class="admin-table-head">
+              <h3>Uploaded Songs</h3>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr><th>Title</th><th>Artist</th><th>Category</th><th>Uploader</th><th>Action</th></tr>
+                </thead>
+                <tbody id="songsBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer-top">
+      <div>
+        <h4>xodisharemix</h4>
+        <p>Learning, building, improving - everyday.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <a href="/index.html">Home</a>
+        <a href="/player.html">Player</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/admin.html">Admin</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <p>Email: prabinakumarsahu28@gmail.com</p>
+        <p>Location: parjang, dhenkanal, odisha</p>
+      </div>
+    </div>
+    <div class="site-footer-bottom">
+      © 2026 prabina kumar sahu | All rights reserved
+    </div>
+  </footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>
+

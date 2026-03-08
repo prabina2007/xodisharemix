@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xodisharemix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="spinner"></div></div>
+
+  <main class="xodi-home">
+    <section class="xodi-hero">
+      <video class="xodi-hero-video" autoplay muted loop playsinline preload="auto" poster="/profile.jpg"><source src="/profile.mp4" type="video/mp4" /></video>
+      <div class="xodi-hero-overlay"></div>
+
+      <header class="xodi-nav container">
+        <a class="xodi-brand" href="/index.html"><img src="/assets/logo.jpg" alt="logo" /><span>xodisharemix</span></a>
+        <nav class="xodi-menu">
+          <a href="/index.html" class="active">Home</a>
+          <a href="#trendingSection">Trending</a>
+          <a href="#soundSection">Sound Check</a>
+          <a href="#privateSection">Private</a>
+          <a href="#bhajanSection">Bhajan</a>
+          <a href="/player.html">Player</a>
+        </nav>
+        <div class="xodi-actions">
+          <button data-theme-toggle class="btn btn-ghost">Theme</button>
+          <a href="/admin.html" class="btn btn-ghost">Admin</a>
+          <a href="/login.html" class="btn btn-primary">Login</a>
+        </div>
+      </header>
+
+      <div class="xodi-center container">
+        <h1>xodisharemix</h1>
+        <p>A signature remix platform for upload, streaming, and download.</p>
+        <p class="xodi-sub">Sometimes music is the only medicine that our heart and soul need. ~ Jay Jagannath</p>
+        <div class="hero-actions">
+          <button id="ctaCreate" class="btn btn-primary">Let's upload ur song</button>
+          <a class="btn btn-ghost" href="/player.html">Open Player</a>
+        </div>
+        <div class="search-wrap xodi-search">
+          <input id="searchSong" class="input" type="text" placeholder="Search by title or artist" />
+          <button id="searchBtn" class="btn btn-primary">Search</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="container xodi-content">
+      <section class="carousel-section">
+        <div id="carouselTrack" class="carousel-track"></div>
+      </section>
+
+      <section class="section">
+        <div class="xodi-section-head">
+          <h3 class="section-title">Recently Uploaded Songs</h3>
+          <a href="/player.html">Show all</a>
+        </div>
+        <div id="recentGrid" class="song-grid"></div>
+      </section>
+
+      <section id="trendingSection" class="section">
+        <div class="xodi-section-head">
+          <h3 class="section-title">Trending / Latest</h3>
+          <a href="/player.html">Show all</a>
+        </div>
+        <div id="trendingGrid" class="song-grid"></div>
+      </section>
+
+      <section id="soundSection" class="section">
+        <div class="xodi-section-head">
+          <h3 class="section-title">Sound Check</h3>
+          <a href="/player.html">Show all</a>
+        </div>
+        <div id="soundGrid" class="song-grid"></div>
+      </section>
+
+      <section id="privateSection" class="section">
+        <div class="xodi-section-head">
+          <h3 class="section-title">Private Track</h3>
+          <a href="/player.html">Show all</a>
+        </div>
+        <div id="privateGrid" class="song-grid"></div>
+      </section>
+
+      <section id="bhajanSection" class="section">
+        <div class="xodi-section-head">
+          <h3 class="section-title">Bhajan Mix</h3>
+          <a href="/player.html">Show all</a>
+        </div>
+        <div id="bhajanGrid" class="song-grid"></div>
+      </section>
+
+      <footer class="site-footer">
+        <div class="site-footer-top">
+          <div>
+            <h4>xodisharemix</h4>
+            <p>Learning, building, improving - everyday.</p>
+          </div>
+          <div>
+            <h4>Quick Links</h4>
+            <a href="/index.html">Home</a>
+            <a href="#trendingSection">Trending</a>
+            <a href="/player.html">Player</a>
+            <a href="/dashboard.html">Dashboard</a>
+          </div>
+          <div>
+            <h4>Contact</h4>
+            <p>Email: prabinakumarsahu28@gmail.com</p>
+            <p>Location: parjang, dhenkanal, odisha</p>
+          </div>
+        </div>
+        <div class="site-footer-bottom">
+          © 2026 prabina kumar sahu | All rights reserved
+        </div>
+      </footer>
+    </section>
+  </main>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/index.js"></script>
+</body>
+</html>
+

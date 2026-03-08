@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In | xodisharemix</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body class="pin-auth-page">
+  <div id="pageLoader" class="page-loader"><div class="spinner"></div></div>
+
+  <main class="pin-auth-shell">
+    <section class="pin-auth-card">
+      <aside class="pin-auth-visual">
+        <img src="/profile.jpg" alt="background" />
+        <div class="pin-auth-overlay"></div>
+        <div class="pin-auth-copy">
+          <h2>xodisharemix</h2>
+          <p>Remix your vibe. Share your sound.</p>
+        </div>
+      </aside>
+
+      <section class="pin-auth-form-wrap">
+        <h1>Sign in</h1>
+        <p class="muted">Welcome back</p>
+
+        <form id="loginForm" class="form pin-form">
+          <input id="loginEmail" class="input" type="email" placeholder="Email" required />
+          <input id="loginPassword" class="input" type="password" placeholder="Password" required />
+          <button class="btn btn-primary pin-btn" type="submit">Sign in</button>
+        </form>
+
+        <p id="messageBox" class="pin-message"></p>
+        <p class="muted pin-foot">No account? <a href="/signup.html">Create account</a></p>
+        <p class="muted pin-foot"><a href="/index.html">Back to home</a></p>
+      </section>
+    </section>
+  </main>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/auth.js"></script>
+</body>
+</html>

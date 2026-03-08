@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | xodisharemix</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="spinner"></div></div>
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a class="brand" href="/index.html"><img src="/assets/logo.jpg" alt="logo" /><span>xodisharemix.com</span></a>
+      <div class="nav-actions">
+        <a href="/admin.html" class="btn btn-ghost">Admin</a>
+        <button data-theme-toggle class="btn btn-ghost">Theme</button>
+        <button id="logoutBtn" class="btn btn-primary">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container panel-wrap dashboard-page">
+    <section class="card glass upload-panel">
+      <div class="upload-head">
+        <h2>Upload Remix Song</h2>
+        <p class="muted">Uploaded songs appear automatically on homepage and player queue.</p>
+      </div>
+
+      <form id="uploadForm" class="form upload-grid" enctype="multipart/form-data">
+        <div class="upload-field">
+          <label>Song Image (1:1)</label>
+          <input class="input" type="file" name="image" accept="image/*" required />
+        </div>
+
+        <div class="upload-field">
+          <label>Song File</label>
+          <input class="input" type="file" name="song" accept="audio/*" required />
+        </div>
+
+        <div class="upload-field">
+          <label>Song Title</label>
+          <input class="input" type="text" name="title" placeholder="Song title" required />
+        </div>
+
+        <div class="upload-field">
+          <label>Artist Name</label>
+          <input class="input" type="text" name="artist" placeholder="Artist name" required />
+        </div>
+
+        <div class="upload-field upload-full">
+          <label>Category</label>
+          <select class="input" name="category" required>
+            <option value="trending_latest">Trending / Latest</option>
+            <option value="sound_check">Sound Check</option>
+            <option value="private_track">Private Track</option>
+            <option value="bhajan_mix">Bhajan Mix</option>
+          </select>
+        </div>
+
+        <div class="upload-actions upload-full">
+          <button class="btn btn-primary upload-btn" type="submit">Upload Song</button>
+        </div>
+      </form>
+      <p id="messageBox" class="upload-message"></p>
+    </section>
+
+    <section class="section">
+      <h3 class="section-title">All Uploaded Songs</h3>
+      <div id="dashboardSongs" class="song-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer-top">
+      <div>
+        <h4>xodisharemix</h4>
+        <p>Learning, building, improving - everyday.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <a href="/index.html">Home</a>
+        <a href="/player.html">Player</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/admin.html">Admin</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <p>Email: prabinakumarsahu28@gmail.com</p>
+        <p>Location: parjang, dhenkanal, odisha</p>
+      </div>
+    </div>
+    <div class="site-footer-bottom">
+      © 2026 prabina kumar sahu | All rights reserved
+    </div>
+  </footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

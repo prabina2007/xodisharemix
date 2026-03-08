@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up | xodisharemix</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body class="pin-auth-page">
+  <div id="pageLoader" class="page-loader"><div class="spinner"></div></div>
+
+  <main class="pin-auth-shell">
+    <section class="pin-auth-card">
+      <aside class="pin-auth-visual">
+        <img src="/profile.jpg" alt="background" />
+        <div class="pin-auth-overlay"></div>
+        <div class="pin-auth-copy">
+          <h2>Join xodisharemix</h2>
+          <p>Create your account and upload remixes.</p>
+        </div>
+      </aside>
+
+      <section class="pin-auth-form-wrap">
+        <h1>Sign up</h1>
+        <p class="muted">Email OTP verification enabled</p>
+
+        <form id="signupForm" class="form pin-form">
+          <input id="signupEmail" class="input" type="email" placeholder="Email" required />
+          <input id="signupPassword" class="input" type="password" placeholder="Password" required />
+          <button class="btn btn-primary pin-btn" type="submit">Send OTP</button>
+        </form>
+
+        <form id="verifyForm" class="form pin-form" style="display:none; margin-top:12px;">
+          <input id="verifyEmail" class="input" type="email" placeholder="Email" required />
+          <input id="verifyOtp" class="input" type="text" placeholder="Enter OTP" required />
+          <button class="btn btn-primary pin-btn" type="submit">Verify OTP & Create Account</button>
+        </form>
+
+        <p id="messageBox" class="pin-message"></p>
+        <p class="muted pin-foot">Already registered? <a href="/login.html">Sign in</a></p>
+        <p class="muted pin-foot"><a href="/index.html">Back to home</a></p>
+      </section>
+    </section>
+  </main>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/auth.js"></script>
+</body>
+</html>
