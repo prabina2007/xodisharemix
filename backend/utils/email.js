@@ -5,6 +5,8 @@ const sendOTPEmail = async (to, otp) => {
   const user = process.env.SMTP_USER;
   const pass = String(process.env.SMTP_PASS || '').replace(/\s+/g, '');
   const port = Number(process.env.SMTP_PORT || 587);
+  const secure =
+    String(process.env.SMTP_SECURE || '').toLowerCase() === 'true' || port === 465;
   const isProduction = process.env.NODE_ENV === 'production';
 
   if (!host || !user || !pass) {
@@ -18,11 +20,11 @@ const sendOTPEmail = async (to, otp) => {
   const transporter = nodemailer.createTransport({
     host,
     port,
-    secure: port === 465,
+    secure,
     auth: { user, pass },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
+    connectionTimeout: 30000,
+    greetingTimeout: 30000,
+    socketTimeout: 60000,
   });
 
   try {
