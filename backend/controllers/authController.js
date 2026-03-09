@@ -32,11 +32,18 @@ const sendSignupOTP = async (req, res) => {
     await user.save();
 
     const result = await sendOTPEmail(normalizedEmail, otp);
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    if (!result.sent && result.mode === 'smtp-missing' && isProduction) {
+      return res.status(500).json({
+        message: 'Email service is not configured on server. Please contact support.',
+      });
+    }
 
     return res.status(200).json({
       message: 'OTP sent successfully',
       delivery: result.mode,
-      devOtp: result.mode === 'dev-log' ? otp : undefined,
+      devOtp: !isProduction && result.mode === 'dev-log' ? otp : undefined,
     });
   } catch (error) {
     return res.status(500).json({ message: 'Failed to send OTP', error: error.message });
