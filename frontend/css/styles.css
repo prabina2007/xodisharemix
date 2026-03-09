@@ -983,7 +983,7 @@ a {
 
 .xodi-home .carousel-track {
   gap: 4px;
-  animation: xodiMarquee 20s linear infinite;
+  animation: xodiMarquee 16s linear infinite;
 }
 
 .xodi-home .carousel-item {
@@ -1587,6 +1587,7 @@ a {
   .xodi-home .song-meta {
     font-size: 0.78rem;
   }
+
 
   .spotify-player-layout {
     grid-template-columns: 1fr;

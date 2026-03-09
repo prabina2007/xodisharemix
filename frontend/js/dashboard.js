@@ -22,8 +22,20 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const form = document.getElementById('uploadForm');
   const msg = document.getElementById('messageBox');
+  const songInput = form.querySelector('input[name="song"]');
+  const titleInput = form.querySelector('input[name="title"]');
 
   loadDashboardSongs();
+
+  songInput.addEventListener('change', () => {
+    const file = songInput.files && songInput.files[0];
+    if (!file) return;
+
+    const baseName = file.name.replace(/\.[^/.]+$/, '');
+    if (!titleInput.value.trim()) {
+      titleInput.value = baseName;
+    }
+  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
