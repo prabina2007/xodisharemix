@@ -1,4 +1,5 @@
 const express = require('express');
+const authMiddleware = require('../middleware/authMiddleware');
 const { uploadSongAssets } = require('../utils/upload');
 const {
   uploadSong,
@@ -22,9 +23,10 @@ router.get('/:id', getSongById);
 // Download song
 router.get('/:id/download', downloadSong);
 
-// Upload song (authentication removed for now)
+// Upload song
 router.post(
   '/upload',
+  authMiddleware,
   uploadSongAssets.fields([
     { name: 'image', maxCount: 1 },
     { name: 'song', maxCount: 1 },

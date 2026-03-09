@@ -40,7 +40,7 @@ const initMiniCornerPlayer = async () => {
   mini.id = 'miniCornerPlayer';
   mini.className = 'mini-corner-player hidden';
   mini.innerHTML = `
-    <button id="miniClose" class="mini-corner-close" aria-label="Close">Ã—</button>
+    <button id="miniClose" class="mini-corner-close" aria-label="Close">×</button>
     <img id="miniCover" class="mini-corner-cover mini-clickable" alt="Now playing" />
     <div class="mini-corner-meta">
       <strong id="miniTitle" class="mini-clickable">Now Playing</strong>
@@ -177,3 +177,4 @@ window.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => showLoader(false), 300);
   initMiniCornerPlayer();
 });
+
