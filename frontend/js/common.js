@@ -1,4 +1,4 @@
-const API_BASE = "https://xodisharemix-backend.onrender.com";
+const API_BASE = "http://localhost:5000";
 
 const categories = [
   { key: 'trending_latest', label: 'Trending / Latest' },
@@ -26,6 +26,13 @@ const setTheme = (theme) => {
   document.documentElement.setAttribute('data-theme', theme);
 };
 
+const resolveMediaUrl = (urlPath) => {
+  if (!urlPath) return '';
+  if (/^https?:\/\//i.test(urlPath)) return urlPath;
+  const normalized = String(urlPath).startsWith('/') ? urlPath : `/${urlPath}`;
+  return `${API_BASE}${normalized}`;
+};
+
 const formatMiniTime = (seconds) => {
   if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
   const mins = Math.floor(seconds / 60);
@@ -34,13 +41,14 @@ const formatMiniTime = (seconds) => {
 };
 
 const initMiniCornerPlayer = async () => {
+  window.playInMini = () => {};
   if (window.location.pathname.includes('player.html')) return;
 
   const mini = document.createElement('section');
   mini.id = 'miniCornerPlayer';
   mini.className = 'mini-corner-player hidden';
   mini.innerHTML = `
-    <button id="miniClose" class="mini-corner-close" aria-label="Close">×</button>
+    <button id="miniClose" class="mini-corner-close" aria-label="Close">&times;</button>
     <img id="miniCover" class="mini-corner-cover mini-clickable" alt="Now playing" />
     <div class="mini-corner-meta">
       <strong id="miniTitle" class="mini-clickable">Now Playing</strong>
@@ -64,6 +72,7 @@ const initMiniCornerPlayer = async () => {
   let queue = [];
   try {
     const res = await fetch(`${API_BASE}/api/songs`);
+    if (!res.ok) return;
     const data = await res.json();
     queue = data.songs || [];
   } catch (_error) {
@@ -88,7 +97,7 @@ const initMiniCornerPlayer = async () => {
   const render = () => {
     const song = queue[currentIndex];
     if (!song) return;
-    cover.src = song.imagePath;
+    cover.src = resolveMediaUrl(song.imagePath);
     title.textContent = song.title;
     artist.textContent = song.artist;
     download.href = `${API_BASE}/api/songs/${song._id}/download`;
@@ -108,7 +117,7 @@ const initMiniCornerPlayer = async () => {
     currentIndex = (idx + queue.length) % queue.length;
     const song = queue[currentIndex];
     render();
-    audio.src = song.songPath;
+    audio.src = resolveMediaUrl(song.songPath);
     mini.classList.remove('hidden');
     document.body.classList.add('has-mini-corner-player');
     if (autoPlay) {
@@ -177,4 +186,5 @@ window.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => showLoader(false), 300);
   initMiniCornerPlayer();
 });
+
 
