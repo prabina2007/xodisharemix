@@ -1,4 +1,4 @@
-const API_BASE = window.location.origin;
+const API_BASE = "https://xodisharemix-backend.onrender.com";
 
 const categories = [
   { key: 'trending_latest', label: 'Trending / Latest' },
