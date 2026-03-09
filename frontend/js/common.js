@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://xodisharemix-backend.onrender.com";
 
 const categories = [
   { key: 'trending_latest', label: 'Trending / Latest' },
