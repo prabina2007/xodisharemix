@@ -3,7 +3,7 @@ const nodemailer = require('nodemailer');
 const sendOTPEmail = async (to, otp) => {
   const host = process.env.SMTP_HOST;
   const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
+  const pass = String(process.env.SMTP_PASS || '').replace(/\s+/g, '');
   const port = Number(process.env.SMTP_PORT || 587);
   const isProduction = process.env.NODE_ENV === 'production';
 
@@ -25,12 +25,17 @@ const sendOTPEmail = async (to, otp) => {
     socketTimeout: 15000,
   });
 
-  await transporter.sendMail({
-    from: process.env.SMTP_FROM || 'xodisharemix.com <no-reply@xodisharemix.com>',
-    to,
-    subject: 'Your xodisharemix.com OTP Code',
-    text: `Your OTP is ${otp}. It expires in 10 minutes.`,
-  });
+  try {
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM || `xodisharemix.com <${user}>`,
+      to,
+      subject: 'Your xodisharemix.com OTP Code',
+      text: `Your OTP is ${otp}. It expires in 10 minutes.`,
+    });
+  } catch (error) {
+    console.error('[SMTP] sendMail failed:', error.message);
+    throw error;
+  }
 
   return { sent: true, mode: 'smtp' };
 };
