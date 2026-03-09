@@ -19,6 +19,16 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  const fetchWithTimeout = async (url, options = {}, timeoutMs = 15000) => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      return await fetch(url, { ...options, signal: controller.signal });
+    } finally {
+      clearTimeout(timeout);
+    }
+  };
+
   if (signupForm) {
     signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -30,7 +40,7 @@ window.addEventListener('DOMContentLoaded', () => {
       btn.textContent = 'Sending...';
 
       try {
-        const res = await fetch(`${API_BASE}/api/auth/signup/send-otp`, {
+        const res = await fetchWithTimeout(`${API_BASE}/api/auth/signup/send-otp`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),
@@ -62,7 +72,7 @@ window.addEventListener('DOMContentLoaded', () => {
       btn.textContent = 'Verifying...';
 
       try {
-        const res = await fetch(`${API_BASE}/api/auth/signup/verify-otp`, {
+        const res = await fetchWithTimeout(`${API_BASE}/api/auth/signup/verify-otp`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, otp }),
@@ -94,7 +104,7 @@ window.addEventListener('DOMContentLoaded', () => {
       btn.textContent = 'Signing in...';
 
       try {
-        const res = await fetch(`${API_BASE}/api/auth/login`, {
+        const res = await fetchWithTimeout(`${API_BASE}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),
