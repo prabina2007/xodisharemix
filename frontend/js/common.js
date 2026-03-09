@@ -1,4 +1,4 @@
-const API_BASE = "https://xodisharemix-backend.onrender.com";
+const API_BASE = "http://localhost:5000";
 
 const categories = [
   { key: 'trending_latest', label: 'Trending / Latest' },
@@ -186,5 +186,6 @@ window.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => showLoader(false), 300);
   initMiniCornerPlayer();
 });
+
 
 

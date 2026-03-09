@@ -1,5 +1,9 @@
+const fs = require('fs');
+const path = require('path');
 const Song = require('../models/Song');
 const { validCategories } = require('../utils/upload');
+
+const normalizeWebPath = (absPath) => `/${path.relative(process.cwd(), absPath).replace(/\\/g, '/')}`;
 
 const uploadSong = async (req, res) => {
   try {
@@ -20,29 +24,33 @@ const uploadSong = async (req, res) => {
 
     const imageFile = req.files.image[0];
     const songFile = req.files.song[0];
+    const imageTargetDir = path.join(process.cwd(), 'uploads', 'song_images', category);
+    const songTargetDir = path.join(process.cwd(), 'uploads', 'songs', category);
+    fs.mkdirSync(imageTargetDir, { recursive: true });
+    fs.mkdirSync(songTargetDir, { recursive: true });
 
-    // Cloudinary returns secure URLs automatically
-    const imagePath = imageFile.path;
-    const songPath = songFile.path;
+    const imageTargetPath = path.join(imageTargetDir, path.basename(imageFile.path));
+    const songTargetPath = path.join(songTargetDir, path.basename(songFile.path));
+    fs.renameSync(imageFile.path, imageTargetPath);
+    fs.renameSync(songFile.path, songTargetPath);
 
     const created = await Song.create({
       title,
       artist,
       category,
-      imagePath,
-      songPath,
+      imagePath: normalizeWebPath(imageTargetPath),
+      songPath: normalizeWebPath(songTargetPath),
       uploader: req.user.id,
     });
 
     return res.status(201).json({
       message: 'Song uploaded successfully',
-      song: created
+      song: created,
     });
-
   } catch (error) {
     return res.status(500).json({
       message: 'Song upload failed',
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -68,11 +76,10 @@ const getSongs = async (req, res) => {
       .sort({ createdAt: -1 });
 
     return res.status(200).json({ songs });
-
   } catch (error) {
     return res.status(500).json({
       message: 'Failed to fetch songs',
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -84,30 +91,27 @@ const getRecentSongs = async (_req, res) => {
       .limit(12);
 
     return res.status(200).json({ songs });
-
   } catch (error) {
     return res.status(500).json({
       message: 'Failed to fetch recent songs',
-      error: error.message
+      error: error.message,
     });
   }
 };
 
 const getSongById = async (req, res) => {
   try {
-    const song = await Song.findById(req.params.id)
-      .populate('uploader', 'email');
+    const song = await Song.findById(req.params.id).populate('uploader', 'email');
 
     if (!song) {
       return res.status(404).json({ message: 'Song not found' });
     }
 
     return res.status(200).json({ song });
-
   } catch (error) {
     return res.status(500).json({
       message: 'Failed to fetch song',
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -120,13 +124,12 @@ const downloadSong = async (req, res) => {
       return res.status(404).json({ message: 'Song not found' });
     }
 
-    // Redirect to Cloudinary file
-    return res.redirect(song.songPath);
-
+    const absPath = path.join(process.cwd(), song.songPath.replace(/^\//, '').replace(/\//g, path.sep));
+    return res.download(absPath);
   } catch (error) {
     return res.status(500).json({
       message: 'Failed to download song',
-      error: error.message
+      error: error.message,
     });
   }
 };

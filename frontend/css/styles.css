@@ -1185,6 +1185,29 @@ a {
   color: #cbd5e1;
 }
 
+.admin-bottom-home {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 14px 0 8px;
+}
+
+.admin-home-btn {
+  background: #e11d48;
+  color: #fff;
+  border: 1px solid #be123c;
+  border-radius: 999px;
+  min-width: 120px;
+}
+
+.admin-home-btn:hover {
+  background: #be123c;
+}
+
+.admin-auth-card .pin-foot {
+  margin-top: 14px;
+}
+
 .dashboard-page {
   padding-top: 8px;
 }

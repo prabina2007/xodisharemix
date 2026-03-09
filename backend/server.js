@@ -44,14 +44,17 @@ app.get('/api/health', (_req, res) => {
   res.status(200).json({ status: 'ok', app: 'xodisharemix.com', env: process.env.NODE_ENV || 'development' });
 });
 
-// root route
-app.get('/', (_req, res) => {
-  res.status(200).json({ message: 'xodisharemix API is running' });
-});
+// serve frontend locally on same port
+app.use(express.static(path.join(process.cwd(), 'frontend')));
 
 // API 404
 app.use('/api', (_req, res) => {
   res.status(404).json({ message: 'API route not found' });
+});
+
+// frontend fallback
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(process.cwd(), 'frontend', 'index.html'));
 });
 
 // error handler
