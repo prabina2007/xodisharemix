@@ -43,8 +43,7 @@ const renderCarousel = (songs) => {
     source.push({ image: song.imagePath, label: categoryLabel(song.category), id: song._id });
   }
 
-  const doubled = [...source, ...source];
-  track.innerHTML = doubled
+  track.innerHTML = source
     .map((item) => {
       const clickAction = `openPlayer('${item.id}')`;
       return `

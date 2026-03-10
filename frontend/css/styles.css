@@ -982,8 +982,9 @@ a {
 }
 
 .xodi-home .carousel-track {
-  gap: 4px;
-  animation: xodiMarquee 16s linear infinite;
+  gap: 12px;
+  will-change: transform;
+  animation: xodiMarqueeFull 22s linear infinite;
 }
 
 .xodi-home .carousel-item {
@@ -991,6 +992,7 @@ a {
   height: 190px;
   border-radius: 0;
   border: 0;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
 }
 
 .xodi-home .carousel-item.glass {
@@ -1004,15 +1006,26 @@ a {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.xodi-home .carousel-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 24px rgba(0, 0, 0, 0.35);
+  filter: brightness(1.06);
+}
+
+.xodi-home .carousel-item:hover img {
+  transform: scale(1.04);
 }
 
 .xodi-home .carousel-item span {
   display: none;
 }
 
-@keyframes xodiMarquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+@keyframes xodiMarqueeFull {
+  from { transform: translateX(100vw); }
+  to { transform: translateX(-100%); }
 }
 
 .xodi-home .section-title,

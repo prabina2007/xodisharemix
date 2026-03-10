@@ -4,11 +4,6 @@ const User = require('../models/User');
 const { sendOTPEmail } = require('../utils/email');
 
 const makeToken = (payload) => jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
-const withTimeout = (promise, ms) =>
-  Promise.race([
-    promise,
-    new Promise((_, reject) => setTimeout(() => reject(new Error('OTP email timeout')), ms)),
-  ]);
 
 const sendSignupOTP = async (req, res) => {
   try {
@@ -36,28 +31,12 @@ const sendSignupOTP = async (req, res) => {
     user.isVerified = false;
     await user.save();
 
-    console.log(`[OTP] send requested for ${normalizedEmail}`);
-    const result = await withTimeout(sendOTPEmail(normalizedEmail, otp), 12000);
-    const isProduction = process.env.NODE_ENV === 'production';
-
-    if (!result.sent && result.mode === 'smtp-missing' && isProduction) {
-      return res.status(500).json({
-        message: 'Email service is not configured on server. Please contact support.',
-      });
-    }
-
-    if (!result.sent && result.mode !== 'dev-log') {
-      return res.status(500).json({
-        message: 'Failed to send OTP email. Please try again.',
-      });
-    }
-
-    console.log(`[OTP] send result for ${normalizedEmail}: ${result.mode}`);
+    const result = await sendOTPEmail(normalizedEmail, otp);
 
     return res.status(200).json({
       message: 'OTP sent successfully',
       delivery: result.mode,
-      devOtp: !isProduction && result.mode === 'dev-log' ? otp : undefined,
+      devOtp: result.mode === 'dev-log' ? otp : undefined,
     });
   } catch (error) {
     return res.status(500).json({ message: 'Failed to send OTP', error: error.message });
