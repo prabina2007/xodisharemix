@@ -3,6 +3,8 @@ const path = require('path');
 const multer = require('multer');
 
 const validCategories = ['trending_latest', 'sound_check', 'private_track', 'bhajan_mix'];
+const appRoot = path.resolve(__dirname, '..', '..');
+const uploadsRoot = path.join(appRoot, 'backend', 'uploads');
 
 const ensureDir = (dirPath) => {
   if (!fs.existsSync(dirPath)) {
@@ -13,7 +15,7 @@ const ensureDir = (dirPath) => {
 const storage = multer.diskStorage({
   destination: (_req, file, cb) => {
     const base = file.fieldname === 'image' ? 'song_images' : 'songs';
-    const target = path.join(process.cwd(), 'uploads', base, 'temp');
+    const target = path.join(uploadsRoot, base, 'temp');
     ensureDir(target);
     cb(null, target);
   },

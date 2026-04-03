@@ -1,11 +1,16 @@
-const fs = require('fs');
 const path = require('path');
 const Song = require('../models/Song');
+const cloudinary = require('../config/cloudinary');
 const { validCategories } = require('../utils/upload');
+const { safeUnlink, uploadToCloudinary } = require('../utils/songAssets');
 
-const normalizeWebPath = (absPath) => `/${path.relative(process.cwd(), absPath).replace(/\\/g, '/')}`;
+const appRoot = path.resolve(__dirname, '..', '..');
+const uploadsRoot = path.join(appRoot, 'backend', 'uploads');
 
 const uploadSong = async (req, res) => {
+  const imageFile = req.files?.image?.[0] || null;
+  const songFile = req.files?.song?.[0] || null;
+
   try {
     const { title, artist } = req.body;
     const category = String(req.body.category || '').toLowerCase();
@@ -18,28 +23,35 @@ const uploadSong = async (req, res) => {
       return res.status(400).json({ message: 'Invalid category' });
     }
 
-    if (!req.files || !req.files.image || !req.files.song) {
-      return res.status(400).json({ message: 'Image and song files are required' });
+    if (!songFile) {
+      return res.status(400).json({ message: 'Song file is required' });
     }
 
-    const imageFile = req.files.image[0];
-    const songFile = req.files.song[0];
-    const imageTargetDir = path.join(process.cwd(), 'uploads', 'song_images', category);
-    const songTargetDir = path.join(process.cwd(), 'uploads', 'songs', category);
-    fs.mkdirSync(imageTargetDir, { recursive: true });
-    fs.mkdirSync(songTargetDir, { recursive: true });
+    let imagePath = '/assets/logo.jpg';
+    let imagePublicId = '';
 
-    const imageTargetPath = path.join(imageTargetDir, path.basename(imageFile.path));
-    const songTargetPath = path.join(songTargetDir, path.basename(songFile.path));
-    fs.renameSync(imageFile.path, imageTargetPath);
-    fs.renameSync(songFile.path, songTargetPath);
+    if (imageFile) {
+      const imageUpload = await uploadToCloudinary(imageFile.path, {
+        folder: `xodisharemix/song_images/${category}`,
+        resource_type: 'image',
+      });
+      imagePath = imageUpload.secure_url;
+      imagePublicId = imageUpload.public_id;
+    }
+
+    const songUpload = await uploadToCloudinary(songFile.path, {
+      folder: `xodisharemix/songs/${category}`,
+      resource_type: 'video',
+    });
 
     const created = await Song.create({
       title,
       artist,
       category,
-      imagePath: normalizeWebPath(imageTargetPath),
-      songPath: normalizeWebPath(songTargetPath),
+      imagePath,
+      imagePublicId,
+      songPath: songUpload.secure_url,
+      songPublicId: songUpload.public_id,
       uploader: req.user.id,
     });
 
@@ -52,6 +64,9 @@ const uploadSong = async (req, res) => {
       message: 'Song upload failed',
       error: error.message,
     });
+  } finally {
+    safeUnlink(imageFile?.path);
+    safeUnlink(songFile?.path);
   }
 };
 
@@ -124,7 +139,17 @@ const downloadSong = async (req, res) => {
       return res.status(404).json({ message: 'Song not found' });
     }
 
-    const absPath = path.join(process.cwd(), song.songPath.replace(/^\//, '').replace(/\//g, path.sep));
+    if (song.songPublicId) {
+      const downloadUrl = cloudinary.url(song.songPublicId, {
+        resource_type: 'video',
+        flags: 'attachment',
+        secure: true,
+      });
+      return res.redirect(downloadUrl);
+    }
+
+    const relativeSongPath = song.songPath.replace(/^\/uploads\//, '').replace(/\//g, path.sep);
+    const absPath = path.join(uploadsRoot, relativeSongPath);
     return res.download(absPath);
   } catch (error) {
     return res.status(500).json({

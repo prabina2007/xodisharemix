@@ -7,12 +7,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
-<body>
+<body class="dashboard-page">
   <div id="pageLoader" class="page-loader"><div class="spinner"></div></div>
   <nav class="navbar">
     <div class="container nav-inner">
       <a class="brand" href="/index.html"><img src="/assets/logo.jpg" alt="logo" /><span>xodisharemix.com</span></a>
       <div class="nav-actions">
+        <a href="/player.html" class="btn btn-ghost">Player</a>
         <a href="/admin.html" class="btn btn-ghost">Admin</a>
         <button data-theme-toggle class="btn btn-ghost">Theme</button>
         <button id="logoutBtn" class="btn btn-primary">Logout</button>
@@ -21,53 +22,88 @@
   </nav>
 
   <main class="container panel-wrap dashboard-page">
-    <section class="card glass upload-panel">
-      <div class="upload-head">
-        <h2>Upload Remix Song</h2>
-        <p class="muted">Uploaded songs appear automatically on homepage and player queue.</p>
-      </div>
-
-      <form id="uploadForm" class="form upload-grid" enctype="multipart/form-data">
-        <div class="upload-field">
-          <label>Song Image (1:1)</label>
-          <input class="input" type="file" name="image" accept="image/*" required />
-        </div>
-
-        <div class="upload-field">
-          <label>Song File</label>
-          <input class="input" type="file" name="song" accept="audio/*" required />
-        </div>
-
-        <div class="upload-field">
-          <label>Song Title</label>
-          <input class="input" type="text" name="title" placeholder="Song title" required />
-        </div>
-
-        <div class="upload-field">
-          <label>Artist Name</label>
-          <input class="input" type="text" name="artist" placeholder="Artist name" required />
-        </div>
-
-        <div class="upload-field upload-full">
-          <label>Category</label>
-          <select class="input" name="category" required>
-            <option value="trending_latest">Trending / Latest</option>
-            <option value="sound_check">Sound Check</option>
-            <option value="private_track">Private Track</option>
-            <option value="bhajan_mix">Bhajan Mix</option>
-          </select>
-        </div>
-
-        <div class="upload-actions upload-full">
-          <button class="btn btn-primary upload-btn" type="submit">Upload Song</button>
-        </div>
-      </form>
-      <p id="messageBox" class="upload-message"></p>
+    <section class="dashboard-simple-stats">
+      <article class="dashboard-simple-card glass">
+        <span>Total Songs</span>
+        <strong id="dashSongCount">0</strong>
+        <small>Tracks already published</small>
+      </article>
+      <article class="dashboard-simple-card glass">
+        <span>Total Creators</span>
+        <strong id="dashCreatorCount">0</strong>
+        <small>Unique artists in your library</small>
+      </article>
     </section>
 
-    <section class="section">
-      <h3 class="section-title">All Uploaded Songs</h3>
-      <div id="dashboardSongs" class="song-grid"></div>
+    <section class="dashboard-main-grid dashboard-main-grid-simple">
+      <section class="card glass upload-panel upload-panel-pro">
+        <div class="upload-head upload-head-pro">
+          <div>
+            <span class="dashboard-section-badge">Upload Studio</span>
+            <h2>Upload Remix Song</h2>
+            <p class="muted">Add your audio, title, artist, category, and optional cover image in one professional flow.</p>
+          </div>
+        </div>
+
+        <div class="upload-preview-card">
+          <div class="upload-preview-media">
+            <img id="coverPreview" src="/assets/logo.jpg" alt="Cover preview" />
+          </div>
+          <div class="upload-preview-copy">
+            <span class="dashboard-section-badge">Preview</span>
+            <h3 id="coverPreviewTitle">Song cover preview</h3>
+            <p id="coverPreviewText" class="muted">Embedded cover art or a manually selected image will appear here before upload.</p>
+          </div>
+        </div>
+
+        <form id="uploadForm" class="form upload-grid upload-grid-pro" enctype="multipart/form-data">
+          <div class="upload-field upload-field-card upload-field-featured">
+            <label>Song Image (1:1)</label>
+            <input id="songImageInput" class="input" type="file" name="image" accept="image/*" />
+            <small id="imageAutofillHint" class="muted">If the song file has embedded cover art, it will be used automatically. Otherwise you can upload an image manually.</small>
+          </div>
+
+          <div class="upload-field upload-field-card upload-field-featured">
+            <label>Song File</label>
+            <input id="songFileInput" class="input" type="file" name="song" accept="audio/*" required />
+            <small class="muted">Supported audio files with embedded cover art are detected automatically.</small>
+          </div>
+
+          <div class="upload-field upload-field-card">
+            <label>Song Title</label>
+            <input class="input" type="text" name="title" placeholder="Song title" required />
+          </div>
+
+          <div class="upload-field upload-field-card">
+            <label>Artist Name</label>
+            <input class="input" type="text" name="artist" placeholder="Artist name" required />
+          </div>
+
+          <div class="upload-field upload-field-card upload-full">
+            <label>Category</label>
+            <select class="input" name="category" required>
+              <option value="trending_latest">Trending / Latest</option>
+              <option value="sound_check">Sound Check</option>
+              <option value="private_track">Private Track</option>
+              <option value="bhajan_mix">Bhajan Mix</option>
+            </select>
+          </div>
+
+          <div class="upload-actions upload-full upload-actions-pro">
+            <button class="btn btn-primary upload-btn" type="submit">Upload Song</button>
+          </div>
+        </form>
+        <p id="messageBox" class="upload-message upload-message-pro"></p>
+      </section>
+
+      <aside class="dashboard-side-panel glass dashboard-side-panel-pro">
+        <div class="dashboard-side-head dashboard-side-head-pro">
+          <span class="dashboard-section-badge">Library</span>
+          <h3>Recently Uploaded Library</h3>
+          <p class="muted">Your latest remix uploads.</p>
+        </div>
+        <div id="dashboardRecentList" class="dashboard-recent-list"></div>
+      </aside>
     </section>
   </main>
 
@@ -95,9 +131,8 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.7/dist/jsmediatags.min.js"></script>
   <script src="/js/common.js"></script>
   <script src="/js/dashboard.js"></script>
 </body>
 </html>
-
-

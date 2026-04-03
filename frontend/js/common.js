@@ -1,4 +1,5 @@
 const API_BASE = "http://localhost:5000";
+const MINI_RESUME_KEY = 'xodiMiniResume';
 
 const categories = [
   { key: 'trending_latest', label: 'Trending / Latest' },
@@ -93,6 +94,22 @@ const initMiniCornerPlayer = async () => {
   const close = document.getElementById('miniClose');
 
   let currentIndex = 0;
+  let miniSwitchToken = 0;
+  let miniVolume = 1;
+
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const fadeMiniTo = async (target, duration = 220) => {
+    const start = Number.isFinite(audio.volume) ? audio.volume : 1;
+    const steps = 10;
+    const stepDuration = Math.max(10, Math.floor(duration / steps));
+
+    for (let i = 1; i <= steps; i += 1) {
+      const value = start + ((target - start) * i) / steps;
+      audio.volume = Math.min(1, Math.max(0, value));
+      await wait(stepDuration);
+    }
+  };
 
   const render = () => {
     const song = queue[currentIndex];
@@ -112,18 +129,40 @@ const initMiniCornerPlayer = async () => {
     window.location.href = `/player.html?id=${song._id}`;
   };
 
-  const loadTrack = async (idx, autoPlay = false) => {
+  const loadTrack = async (idx, options = {}) => {
+    const { autoPlay = false, startAt = 0, volume = 1 } = options;
     if (!queue.length) return;
+    const token = ++miniSwitchToken;
     currentIndex = (idx + queue.length) % queue.length;
     const song = queue[currentIndex];
+
+    if (!audio.paused && audio.src) {
+      await fadeMiniTo(0, 220);
+      if (token !== miniSwitchToken) return;
+      audio.pause();
+    }
+
     render();
     audio.src = resolveMediaUrl(song.songPath);
+    audio.currentTime = 0;
+    miniVolume = Number.isFinite(Number(volume)) ? Math.max(0, Math.min(1, Number(volume))) : miniVolume;
+    audio.volume = autoPlay ? 0 : miniVolume;
     mini.classList.remove('hidden');
     document.body.classList.add('has-mini-corner-player');
+
+    if (Number.isFinite(Number(startAt)) && Number(startAt) > 0) {
+      const resumeAt = Number(startAt);
+      audio.addEventListener('loadedmetadata', () => {
+        audio.currentTime = Math.min(resumeAt, audio.duration || resumeAt);
+      }, { once: true });
+    }
+
     if (autoPlay) {
       try {
         await audio.play();
       } catch (_error) {}
+      if (token !== miniSwitchToken) return;
+      await fadeMiniTo(miniVolume, 220);
     }
     toggle.textContent = audio.paused ? 'Play' : 'Pause';
   };
@@ -131,13 +170,15 @@ const initMiniCornerPlayer = async () => {
   window.playInMini = async (songId) => {
     if (!queue.length) return;
     const idx = queue.findIndex((s) => s._id === songId);
-    await loadTrack(idx >= 0 ? idx : 0, true);
+    await loadTrack(idx >= 0 ? idx : 0, { autoPlay: true });
   };
 
   toggle.addEventListener('click', async () => {
     if (audio.paused) {
       try {
+        audio.volume = 0;
         await audio.play();
+        await fadeMiniTo(miniVolume, 180);
       } catch (_error) {}
     } else {
       audio.pause();
@@ -145,8 +186,8 @@ const initMiniCornerPlayer = async () => {
     toggle.textContent = audio.paused ? 'Play' : 'Pause';
   });
 
-  prev.addEventListener('click', () => loadTrack(currentIndex - 1, true));
-  next.addEventListener('click', () => loadTrack(currentIndex + 1, true));
+  prev.addEventListener('click', () => loadTrack(currentIndex - 1, { autoPlay: true }));
+  next.addEventListener('click', () => loadTrack(currentIndex + 1, { autoPlay: true }));
   close.addEventListener('click', () => {
     audio.pause();
     mini.classList.add('hidden');
@@ -169,7 +210,31 @@ const initMiniCornerPlayer = async () => {
     seek.value = String((audio.currentTime / audio.duration) * 100);
     currentTime.textContent = formatMiniTime(audio.currentTime);
   });
-  audio.addEventListener('ended', () => loadTrack(currentIndex + 1, true));
+  audio.addEventListener('ended', () => loadTrack(currentIndex + 1, { autoPlay: true }));
+
+  // Resume mini-player from the full player state, if available.
+  const resumeRaw = localStorage.getItem(MINI_RESUME_KEY);
+  if (resumeRaw && queue.length) {
+    try {
+      const resume = JSON.parse(resumeRaw);
+      const idx = queue.findIndex((s) => s._id === resume.songId);
+      if (idx >= 0) {
+        const elapsed = resume.wasPlaying && resume.savedAt
+          ? Math.max(0, (Date.now() - Number(resume.savedAt)) / 1000)
+          : 0;
+        const startAt = Math.max(0, Number(resume.currentTime || 0) + elapsed);
+        await loadTrack(idx, {
+          autoPlay: Boolean(resume.wasPlaying),
+          startAt,
+          volume: Number(resume.volume),
+        });
+      }
+    } catch (_error) {
+      // ignore invalid local storage payload
+    } finally {
+      localStorage.removeItem(MINI_RESUME_KEY);
+    }
+  }
 };
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -186,6 +251,3 @@ window.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => showLoader(false), 300);
   initMiniCornerPlayer();
 });
-
-
-

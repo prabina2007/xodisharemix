@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Song = require('../models/Song');
+const { deleteSongAssets } = require('../utils/songAssets');
 
 const adminLogin = (req, res) => {
   const { username, password } = req.body;
@@ -31,7 +32,11 @@ const deleteUser = async (req, res) => {
     if (!deleted) {
       return res.status(404).json({ message: 'User not found' });
     }
+
+    const songs = await Song.find({ uploader: req.params.id });
+    await Promise.all(songs.map((song) => deleteSongAssets(song)));
     await Song.deleteMany({ uploader: req.params.id });
+
     return res.status(200).json({ message: 'User and related songs deleted' });
   } catch (error) {
     return res.status(500).json({ message: 'Failed to delete user', error: error.message });
@@ -53,6 +58,8 @@ const deleteSong = async (req, res) => {
     if (!deleted) {
       return res.status(404).json({ message: 'Song not found' });
     }
+
+    await deleteSongAssets(deleted);
     return res.status(200).json({ message: 'Song deleted' });
   } catch (error) {
     return res.status(500).json({ message: 'Failed to delete song', error: error.message });

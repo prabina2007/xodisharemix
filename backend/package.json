@@ -2,10 +2,10 @@
   "name": "xodisharemix",
   "version": "1.0.0",
   "description": "Modern full-stack music remix platform",
-  "main": "backend/server.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon backend/server.js",
-    "start": "node backend/server.js"
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

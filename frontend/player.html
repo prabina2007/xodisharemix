@@ -13,6 +13,7 @@
     <div class="container nav-inner">
       <a class="brand" href="/index.html"><img src="/assets/logo.jpg" alt="logo" /><span>xodisharemix.com</span></a>
       <div class="nav-actions">
+        <a href="/index.html" class="btn btn-ghost">Home</a>
         <button data-theme-toggle class="btn btn-ghost">Theme</button>
         <a href="/dashboard.html" class="btn btn-primary">Dashboard</a>
       </div>
@@ -20,42 +21,75 @@
   </nav>
 
   <main class="container player-wrap">
-    <section class="player-layout spotify-player-layout">
-      <section class="card glass now-playing-card">
-        <img id="songCover" class="cover-large spotify-cover" src="https://picsum.photos/seed/xodi-player/700/700" alt="Song cover" />
-        <h2 id="songTitle" class="now-title">Loading song...</h2>
-        <p id="songArtist" class="muted now-artist">Please wait</p>
-
-        <div class="controls">
-          <div class="control-row spotify-controls">
-            <button id="prevBtn" class="control-icon-btn" aria-label="Previous">Prev</button>
-            <button id="playBtn" class="play-main-btn" aria-label="Play">Play</button>
-            <button id="pauseBtn" class="control-icon-btn" aria-label="Pause">Pause</button>
-            <button id="nextBtn" class="control-icon-btn" aria-label="Next">Next</button>
-            <a id="downloadBtn" class="btn btn-ghost download-btn" href="#">Download</a>
+    <section class="player-layout spotify-player-layout player-layout-clean">
+      <div class="now-side">
+        <section class="card glass now-playing-card now-playing-card-clean">
+          <div class="player-card-top">
+            <span class="player-badge">NOW PLAYING</span>
+            <span id="playerCategoryBadge" class="player-chip">Loading</span>
           </div>
+          <img id="songCover" class="cover-large spotify-cover" src="https://picsum.photos/seed/xodi-player/700/700" alt="Song cover" />
+          <h2 id="songTitle" class="now-title">Loading song...</h2>
+          <p id="songArtist" class="muted now-artist">Please wait</p>
 
-          <div class="progress-block">
-            <div class="progress-meta"><span class="muted">Playback</span><span class="muted"><span id="currentTime">0:00</span> / <span id="totalTime">0:00</span></span></div>
-            <input id="progressBar" class="range spotify-range" type="range" min="0" max="100" value="0" />
-          </div>
-          <div class="volume-block">
-            <label class="muted">Volume</label>
-            <input id="volumeBar" class="range spotify-range" type="range" min="0" max="1" step="0.01" value="1" />
-          </div>
-        </div>
-      </section>
+          <div class="controls">
+            <div class="control-row spotify-controls">
+              <button id="prevBtn" class="control-icon-btn" aria-label="Previous">Prev</button>
+              <button id="playPauseBtn" class="play-main-btn" aria-label="Play or Pause">Play</button>
+              <button id="nextBtn" class="control-icon-btn" aria-label="Next">Next</button>
+              <button id="openMiniBtn" class="control-icon-btn" aria-label="Open Mini Player">Mini Player</button>
+              <a id="downloadBtn" class="btn btn-ghost download-btn" href="#">Download</a>
+            </div>
 
-      <aside class="card glass queue-card">
-        <div class="queue-head">
-          <h3>Queue</h3>
-          <p class="muted">Click any track to play instantly</p>
-        </div>
-        <div id="queueList" class="queue-list spotify-queue-list"></div>
-      </aside>
+            <div class="progress-block">
+              <div class="progress-meta"><span class="muted">Playback</span><span class="muted"><span id="currentTime">0:00</span> / <span id="totalTime">0:00</span></span></div>
+              <input id="progressBar" class="range spotify-range" type="range" min="0" max="100" value="0" />
+            </div>
+            <div class="volume-block">
+              <label class="muted">Volume</label>
+              <input id="volumeBar" class="range spotify-range" type="range" min="0" max="1" step="0.01" value="1" />
+            </div>
+          </div>
+        </section>
+
+        <section class="card glass now-eq-card now-eq-card-clean">
+          <div class="row">
+            <h3>Equalizer</h3>
+            <button id="resetEqBtn" class="btn btn-ghost" type="button">Reset EQ</button>
+          </div>
+          <div class="eq-grid">
+            <div class="eq-field">
+              <small class="muted">Bass</small>
+              <input id="bassEq" class="range spotify-range" type="range" min="-12" max="12" step="1" value="0" />
+            </div>
+            <div class="eq-field">
+              <small class="muted">Mid</small>
+              <input id="midEq" class="range spotify-range" type="range" min="-12" max="12" step="1" value="0" />
+            </div>
+            <div class="eq-field">
+              <small class="muted">Treble</small>
+              <input id="trebleEq" class="range spotify-range" type="range" min="-12" max="12" step="1" value="0" />
+            </div>
+          </div>
+          <div id="eqVisualizer" class="eq-visualizer" aria-hidden="true"></div>
+        </section>
+      </div>
+
+      <div class="queue-side queue-side-clean">
+        <aside class="card glass queue-card queue-card-clean">
+          <div class="queue-head">
+            <div>
+              <h3>Queue</h3>
+              <p class="muted">Click any track to play instantly</p>
+            </div>
+            <span id="queueCountBadge" class="player-chip">0 songs</span>
+          </div>
+          <div id="queueList" class="queue-list spotify-queue-list"></div>
+        </aside>
+      </div>
     </section>
 
-    <audio id="audioPlayer" preload="metadata"></audio>
+    <audio id="audioPlayer" preload="metadata" crossorigin="anonymous"></audio>
   </main>
 
   <footer class="site-footer">
@@ -86,5 +120,4 @@
   <script src="/js/player.js"></script>
 </body>
 </html>
-
 

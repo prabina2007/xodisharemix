@@ -14,7 +14,7 @@
 
   <main class="xodi-home">
     <section class="xodi-hero">
-      <video class="xodi-hero-video" autoplay muted loop playsinline preload="auto" poster="/profile.jpg"><source src="/profile.mp4" type="video/mp4" /></video>
+      <video class="xodi-hero-video" autoplay muted loop playsinline preload="auto" poster="/assets/profile.jpg"><source src="/assets/profile.mp4" type="video/mp4" /></video>
       <div class="xodi-hero-overlay"></div>
 
       <header class="xodi-nav container">
@@ -34,27 +34,70 @@
         </div>
       </header>
 
-      <div class="xodi-center container">
-        <h1>xodisharemix</h1>
-        <p>A signature remix platform for upload, streaming, and download.</p>
-        <p class="xodi-sub">Sometimes music is the only medicine that our heart and soul need. ~ Jay Jagannath</p>
-        <div class="hero-actions">
-          <button id="ctaCreate" class="btn btn-primary">Let's upload ur song</button>
-          <a class="btn btn-ghost" href="/player.html">Open Player</a>
-        </div>
-        <div class="search-wrap xodi-search">
-          <input id="searchSong" class="input" type="text" placeholder="Search by title or artist" />
-          <button id="searchBtn" class="btn btn-primary">Search</button>
+      <div class="xodi-center container xodi-hero-grid">
+        <div class="xodi-hero-copy">
+          <h1>xodisharemix</h1>
+          <p>A signature remix platform for upload, streaming, and download.</p>
+          <p class="xodi-sub">Sometimes music is the only medicine that our heart and soul need. ~ Jay Jagannath</p>
+          <div class="hero-actions">
+            <button id="ctaCreate" class="btn btn-primary">Let's upload ur song</button>
+            <a class="btn btn-ghost" href="/player.html">Open Player</a>
+          </div>
+          <div class="search-wrap xodi-search">
+            <input id="searchSong" class="input" type="text" placeholder="Search by title or artist" />
+            <button id="searchBtn" class="btn btn-primary">Search</button>
+          </div>
+          <section id="searchResultsSection" class="search-results-panel glass hidden-search-results" aria-live="polite">
+            <div class="xodi-section-head search-results-head">
+              <h3 class="section-title">Search Results</h3>
+              <button id="clearSearchBtn" class="btn btn-ghost" type="button">Clear</button>
+            </div>
+            <div id="searchResultsMeta" class="search-results-meta muted">Type a song or artist name to search.</div>
+            <div id="searchResultsGrid" class="song-grid search-results-grid"></div>
+          </section>
         </div>
       </div>
     </section>
 
     <section class="container xodi-content">
+      <section class="xodi-overview-strip glass">
+        <article>
+          <span>Music-first UI</span>
+          <strong>Focused dark theme with green energy</strong>
+        </article>
+        <article>
+          <span>Full stack</span>
+          <strong>Upload, stream, download, and manage songs</strong>
+        </article>
+        <article>
+          <span>Built for continuity</span>
+          <strong>Mini-player and queue stay connected</strong>
+        </article>
+      </section>
+
       <section class="carousel-section">
         <div id="carouselTrack" class="carousel-track"></div>
       </section>
 
-      <section class="section">
+      <section class="xodi-highlight-grid">
+        <article class="xodi-highlight-card glass">
+          <span>Upload pipeline</span>
+          <h3>Publish songs in one dashboard flow</h3>
+          <p>Images, metadata, category selection, and track upload all stay in one clean publishing surface.</p>
+        </article>
+        <article class="xodi-highlight-card glass">
+          <span>Playback design</span>
+          <h3>Queue, equalizer, and resume-ready listening</h3>
+          <p>The player stays focused on music controls without feeling overloaded or disconnected from the homepage.</p>
+        </article>
+        <article class="xodi-highlight-card glass">
+          <span>Platform control</span>
+          <h3>Essential admin tools without clutter</h3>
+          <p>Admin stays lean: users, songs, filters, and actions are visible immediately without extra noise.</p>
+        </article>
+      </section>
+
+      <section class="section section-featured">
         <div class="xodi-section-head">
           <h3 class="section-title">Recently Uploaded Songs</h3>
           <a href="/player.html">Show all</a>
@@ -98,23 +141,23 @@
         <div class="site-footer-top">
           <div>
             <h4>xodisharemix</h4>
-            <p>Learning, building, improving - everyday.</p>
+            <p>Upload remixes, stream tracks, and manage your music community from one clean platform.</p>
           </div>
           <div>
             <h4>Quick Links</h4>
             <a href="/index.html">Home</a>
-            <a href="#trendingSection">Trending</a>
             <a href="/player.html">Player</a>
             <a href="/dashboard.html">Dashboard</a>
+            <a href="/admin.html">Admin</a>
           </div>
           <div>
             <h4>Contact</h4>
             <p>Email: prabinakumarsahu28@gmail.com</p>
-            <p>Location: parjang, dhenkanal, odisha</p>
+            <p>Location: Dhenkanal, Odisha, India</p>
           </div>
         </div>
         <div class="site-footer-bottom">
-          (c) 2026 prabina kumar sahu | All rights reserved
+          (c) 2026 xodisharemix | All rights reserved
         </div>
       </footer>
     </section>
@@ -124,5 +167,3 @@
   <script src="/js/index.js"></script>
 </body>
 </html>
-
-
