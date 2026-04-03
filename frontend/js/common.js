@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5000";
+const API_BASE = window.location.origin;
 const MINI_RESUME_KEY = 'xodiMiniResume';
 
 const categories = [
@@ -251,3 +251,4 @@ window.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => showLoader(false), 300);
   initMiniCornerPlayer();
 });
+
