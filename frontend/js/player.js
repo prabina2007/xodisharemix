@@ -57,14 +57,9 @@ const saveMiniResumeStateAndGoHome = () => {
 };
 
 const setPlayPauseLabel = () => {
-  const playSvg = '<path d="M8 5v14l11-7z"/>';
-  const pauseSvg = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
   const btn = document.getElementById('playPauseBtn');
-  if (btn && audio) btn.textContent = audio.paused ? 'Play' : 'Pause';
-  const mainIcon = document.getElementById('mainPlayIcon');
-  if (mainIcon && audio) mainIcon.innerHTML = audio.paused ? playSvg : pauseSvg;
-  const miniIcon = document.getElementById('miniPlayIcon');
-  if (miniIcon && audio) miniIcon.innerHTML = audio.paused ? playSvg : pauseSvg;
+  if (!btn || !audio) return;
+  btn.textContent = audio.paused ? 'Play' : 'Pause';
 };
 
 const updatePlayerMeta = () => {
@@ -81,14 +76,7 @@ const updatePlayerMeta = () => {
 const renderQueue = () => {
   const root = document.getElementById('queueList');
   root.innerHTML = queue
-    .map((song, idx) => `<div class="sp-track-item" onclick="playIndex(${idx})">\
-        <img src="${song.imagePath}" class="sp-track-cover" />\
-        <div class="sp-track-info">\
-          <p class="sp-track-title ${idx === currentIndex ? 'active' : ''}">${song.title.replace(/"/g, '&quot;')}</p>\
-          <p class="sp-track-artist">${song.artist.replace(/"/g, '&quot;')}</p>\
-        </div>\
-        <button class="sp-icon-btn" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>\
-      </div>`)
+    .map((song, idx) => `<div class="queue-item ${idx === currentIndex ? 'active' : ''}" onclick="playIndex(${idx})"><strong>${idx + 1}. ${song.title}</strong><br/><small class="muted">${song.artist}</small></div>`)
     .join('');
   updatePlayerMeta();
 };
@@ -315,14 +303,9 @@ const syncEqualizerUI = () => {
 
 const loadSong = async (song, forcePlay = true) => {
   const token = ++switchToken;
-  const heroCover = document.getElementById('playlistHeroCover');
-  if (heroCover) heroCover.src = song.imagePath;
-  const coverEl = document.getElementById('songCover');
-  if (coverEl) coverEl.src = song.imagePath;
-  const titleEls = [document.getElementById('songTitle'), document.getElementById('miniTitle')];
-  titleEls.forEach(el => { if(el) el.textContent = song.title; });
-  const artistEls = [document.getElementById('songArtist'), document.getElementById('miniArtist')];
-  artistEls.forEach(el => { if(el) el.textContent = song.artist; });
+  document.getElementById('songCover').src = song.imagePath;
+  document.getElementById('songTitle').textContent = song.title;
+  document.getElementById('songArtist').textContent = song.artist;
   document.getElementById('downloadBtn').href = `${API_BASE}/api/songs/${song._id}/download`;
   document.getElementById('downloadBtn').setAttribute('download', song.title);
 
@@ -390,7 +373,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   const currentTime = document.getElementById('currentTime');
   const totalTime = document.getElementById('totalTime');
 
-  const playAction = async () => {
+  playPauseBtn.addEventListener('click', async () => {
     initEqualizer();
     if (eqContext && eqContext.state === 'suspended') {
       try { await eqContext.resume(); } catch (_error) {}
@@ -403,12 +386,7 @@ window.addEventListener('DOMContentLoaded', async () => {
       audio.pause();
     }
     setPlayPauseLabel();
-  };
-  if (playPauseBtn) playPauseBtn.addEventListener('click', playAction);
-  const pbMain = document.getElementById('playPauseBtnMain');
-  const pbMini = document.getElementById('playPauseBtnMini');
-  if (pbMain) pbMain.addEventListener('click', playAction);
-  if (pbMini) pbMini.addEventListener('click', playAction);
+  });
   nextBtn.addEventListener('click', () => {
     playIndex((currentIndex + 1) % queue.length, true);
   });
@@ -425,8 +403,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (!audio.duration) return;
     progress.value = (audio.currentTime / audio.duration) * 100;
     currentTime.textContent = formatTime(audio.currentTime);
-    const miniPb = document.getElementById('miniProgressBar');
-    if (miniPb) miniPb.style.width = `${(audio.currentTime / audio.duration) * 100}%`;
   });
 
   progress.addEventListener('input', () => {
