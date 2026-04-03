@@ -1,6 +1,9 @@
 const nodemailer = require('nodemailer');
 
 const sendOTPEmail = async (to, otp) => {
+  // Always log OTP for Render logs
+  console.log(`[RENDER LOG] Generated OTP for ${to}: ${otp}`);
+
   const host = process.env.SMTP_HOST;
   const user = process.env.SMTP_USER;
   const pass = String(process.env.SMTP_PASS || '').replace(/\s+/g, '');
