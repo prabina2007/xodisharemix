@@ -76,13 +76,27 @@ const wireAdminNav = () => {
 };
 
 const loadAdminData = async () => {
-  const usersRes = await fetch(`${API_BASE}/api/admin/users`, { headers: adminHeaders() });
-  const songsRes = await fetch(`${API_BASE}/api/admin/songs`, { headers: adminHeaders() });
-  const usersData = await usersRes.json();
-  const songsData = await songsRes.json();
-  adminUsers = usersData.users || [];
-  adminSongs = songsData.songs || [];
-  renderAdminData();
+  try {
+    const usersRes = await fetch(`${API_BASE}/api/admin/users`, { headers: adminHeaders() });
+    const songsRes = await fetch(`${API_BASE}/api/admin/songs`, { headers: adminHeaders() });
+
+    if (usersRes.status === 401 || songsRes.status === 401 || usersRes.status === 403) {
+      localStorage.removeItem('xodiAdminToken');
+      return adminAuthGuard();
+    }
+
+    const usersData = await usersRes.json();
+    const songsData = await songsRes.json();
+    
+    adminUsers = usersData.users || [];
+    adminSongs = songsData.songs || [];
+    renderAdminData();
+  } catch (error) {
+    console.error('Failed to load admin data:', error);
+    adminUsers = [];
+    adminSongs = [];
+    renderAdminData();
+  }
 };
 
 const deleteUser = async (id) => {
