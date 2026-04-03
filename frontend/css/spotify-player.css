@@ -1,0 +1,329 @@
+/* Spotify Mobile Player Layout */
+.spotify-mobile-body {
+  background-color: #121212;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', 'Poppins', sans-serif;
+  overflow-x: hidden;
+}
+
+.spotify-mobile-view {
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: #121212;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.sp-header {
+  padding: 16px;
+  position: sticky;
+  top: 0;
+  background: linear-gradient(to bottom, rgba(18,18,18,1) 0%, rgba(18,18,18,0) 100%);
+  z-index: 10;
+}
+
+.sp-btn-back {
+  background: transparent;
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.sp-btn-back svg { width: 24px; height: 24px; }
+
+/* Main */
+.sp-main {
+  flex: 1;
+  padding: 0 16px;
+}
+
+/* Hero Section */
+.sp-hero {
+  display: flex;
+  flex-direction: column;
+}
+
+.sp-cover-container {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 60px rgba(0,0,0,0.5);
+  position: relative;
+}
+
+.sp-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sp-playlist-title {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  margin: 0;
+  color: #1ed760;
+  font-size: 2.2rem;
+  font-weight: 800;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  /* mimicking the image text style somewhat */
+  -webkit-text-stroke: 1px #000;
+}
+
+.sp-description {
+  color: #b3b3b3;
+  margin: 0 0 12px 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.sp-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.sp-logo-blob {
+  width: 20px;
+  height: 20px;
+}
+
+.sp-brand-text {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.sp-meta {
+  color: #b3b3b3;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+}
+
+/* Actions */
+.sp-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.sp-actions-left {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.sp-mini-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #333;
+}
+
+.sp-actions-right {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.sp-icon-btn {
+  background: transparent;
+  border: none;
+  color: #b3b3b3;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sp-icon-btn svg { width: 24px; height: 24px; }
+.sp-icon-btn:hover { color: white; }
+
+.sp-play-main {
+  background-color: #1ed760;
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.sp-play-main svg { width: 24px; height: 24px; margin-left: 4px; }
+.sp-play-main:active { transform: scale(0.95); }
+
+/* Track List */
+.sp-track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sp-track-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.sp-track-cover {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.sp-track-info {
+  flex: 1;
+  min-width: 0; /* for truncation */
+}
+
+.sp-track-title {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sp-track-title.active {
+  color: #1ed760;
+}
+
+.sp-track-artist {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #b3b3b3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mini Player */
+.sp-mini-player {
+  position: fixed;
+  bottom: 64px; /* above bottom nav */
+  left: 0; right: 0;
+  margin: 0 auto;
+  max-width: 480px;
+  width: calc(100% - 16px);
+  background: #5c161b; /* reddish hue */
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 50;
+}
+
+.sp-mini-content {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  gap: 12px;
+}
+
+.sp-mini-cover {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.sp-mini-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sp-mini-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sp-mini-artist {
+  font-size: 0.75rem;
+  color: #ffcccc; /* faint red/white depending on exact desired look */
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sp-mini-device-icon {
+  display: inline-flex;
+  color: #1ed760;
+}
+
+.sp-mini-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: 8px;
+}
+.sp-mini-btn {
+  color: white;
+}
+.sp-mini-btn svg { width: 24px; height: 24px; }
+
+.sp-mini-progress {
+  height: 2px;
+  background: rgba(255,255,255,0.2);
+  width: 100%;
+}
+.sp-mini-progress-filled {
+  height: 100%;
+  background: white;
+  width: 0%; /* set by JS */
+}
+
+/* Bottom Nav */
+.sp-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0; right: 0;
+  height: 64px;
+  background: rgba(18,18,18,0.95);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 40;
+  border-top: 1px solid rgba(255,255,255,0.05); /* very subtle */
+}
+
+.sp-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #b3b3b3;
+  text-decoration: none;
+  font-size: 0.65rem;
+  gap: 4px;
+}
+
+.sp-nav-item svg {
+  width: 24px;
+  height: 24px;
+}
+.sp-nav-item:hover, .sp-nav-item:active {
+  color: white;
+}

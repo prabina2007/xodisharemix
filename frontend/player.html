@@ -3,121 +3,165 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Player | xodisharemix.com</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Trending Now India | xodisharemix.com</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
-<body class="player-page">
+<body class="spotify-mobile-body">
   <div id="pageLoader" class="page-loader"><div class="spinner"></div></div>
-  <nav class="navbar">
-    <div class="container nav-inner">
-      <a class="brand" href="/index.html"><img src="/assets/logo.jpg" alt="logo" /><span>xodisharemix.com</span></a>
-      <div class="nav-actions">
-        <a href="/index.html" class="btn btn-ghost">Home</a>
-        <button data-theme-toggle class="btn btn-ghost">Theme</button>
-        <a href="/dashboard.html" class="btn btn-primary">Dashboard</a>
+  
+  <div class="spotify-mobile-view">
+    <!-- Top Header -->
+    <header class="sp-header">
+      <a href="/index.html" class="sp-btn-back">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
+      </a>
+    </header>
+
+    <!-- Playlist Hero Section -->
+    <main class="sp-main">
+      <div class="sp-hero">
+        <div class="sp-cover-container">
+          <img src="https://picsum.photos/seed/playlist/600/600" alt="Trending Now India" class="sp-cover-img" id="playlistHeroCover" />
+          <h1 class="sp-playlist-title" id="songTitle">Loading song...</h1>
+        </div>
+        <p class="sp-description">Every track you're listening/should be listening to ;)</p>
+        <div class="sp-brand">
+          <svg viewBox="0 0 24 24" class="sp-logo-blob" fill="#1ed760"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.69 14.4c-.19.31-.59.42-.9.23-2.45-1.5-5.54-1.84-9.19-1.01-.35.08-.7-.14-.78-.49-.08-.34.14-.7.49-.78 4-.9 7.42-.51 10.15 1.16.31.2.42.6.23.91zm1.28-2.87c-.24.39-.74.52-1.13.28-2.8-1.72-7.06-2.22-10.4-1.21-.44.13-.91-.12-1.04-.56-.13-.44.12-.91.56-1.04 3.86-1.17 8.57-.6 11.73 1.34.39.24.52.75.28 1.14zm.14-3c-3.36-2-8.91-2.18-12.14-1.21-.54.16-1.1-.15-1.26-.69-.16-.54.15-1.1.69-1.26 3.73-1.11 9.92-.91 13.79 1.39.49.29.65.92.36 1.41-.29.49-.92.65-1.41.36z"/></svg>
+          <span class="sp-brand-text">Made for you</span>
+        </div>
+        <div class="sp-meta">
+          1,260,945 saves &bull; <span id="queueCountBadge">0 songs</span>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="sp-actions">
+        <div class="sp-actions-left">
+          <button class="sp-icon-btn">
+             <!-- placeholder avatar -->
+             <img src="/assets/logo.jpg" class="sp-mini-avatar" onerror="this.src='https://picsum.photos/40'" />
+          </button>
+          <button class="sp-icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+          </button>
+          <button class="sp-icon-btn">
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12l4 4 4-4"/></svg>
+          </button>
+          <button class="sp-icon-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+          </button>
+        </div>
+        <div class="sp-actions-right">
+          <button class="sp-icon-btn sp-shuffle-btn">
+             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+          </button>
+          <button class="sp-play-main" id="playPauseBtnMain">
+            <svg id="mainPlayIcon" viewBox="0 0 24 24" fill="black"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Queue/Track List -->
+      <div class="sp-track-list" id="queueList"></div>
+      
+      <!-- padding to scroll past the fixed mini player -->
+      <div style="height: 120px;"></div>
+    </main>
+
+    <!-- Mini Sticky Player -->
+    <div class="sp-mini-player">
+      <div class="sp-mini-content">
+        <img src="https://picsum.photos/50" class="sp-mini-cover" id="songCover" />
+        <div class="sp-mini-info">
+          <div class="sp-mini-title" id="miniTitle">Loading...</div>
+          <div class="sp-mini-artist">
+            <span class="sp-mini-device-icon">
+               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7v2H8v2h8v-2h-2v-2h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H3V4h18v12z"/></svg>
+            </span>
+            <span id="songArtist">xodisharemix.com</span>
+          </div>
+        </div>
+        <div class="sp-mini-controls">
+          <button class="sp-icon-btn sp-mini-btn">
+             <!-- random icon -->
+             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 0 0-9 9v7c0 1.1.9 2 2 2h3v-8H5v-1c0-3.87 3.13-7 7-7s7 3.13 7 7v1h-3v8h3c1.1 0 2-.9 2-2v-7a9 9 0 0 0-9-9z"/></svg>
+          </button>
+          <button class="sp-icon-btn sp-mini-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+          </button>
+          <button class="sp-icon-btn sp-mini-btn" id="playPauseBtnMini">
+            <svg id="miniPlayIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="sp-mini-progress">
+        <div class="sp-mini-progress-filled" id="miniProgressBar"></div>
       </div>
     </div>
-  </nav>
 
-  <main class="container player-wrap">
-    <section class="player-layout spotify-player-layout player-layout-clean">
-      <div class="now-side">
-        <section class="card glass now-playing-card now-playing-card-clean">
-          <div class="player-card-top">
-            <span class="player-badge">NOW PLAYING</span>
-            <span id="playerCategoryBadge" class="player-chip">Loading</span>
-          </div>
-          <img id="songCover" class="cover-large spotify-cover" src="https://picsum.photos/seed/xodi-player/700/700" alt="Song cover" />
-          <h2 id="songTitle" class="now-title">Loading song...</h2>
-          <p id="songArtist" class="muted now-artist">Please wait</p>
+    <!-- Bottom Nav -->
+    <nav class="sp-bottom-nav">
+      <a href="/index.html" class="sp-nav-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Home</span>
+      </a>
+      <a href="#" class="sp-nav-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <span>Search</span>
+      </a>
+      <a href="#" class="sp-nav-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2.53 10.12l-2.91-2.22-2.9 2.22c-.22.17-.54.01-.54-.27V5h7v8.85c0 .28-.32.44-.55.27z"/></svg>
+        <span>Your Library</span>
+      </a>
+      <a href="#" class="sp-nav-item">
+         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+        <span>Premium</span>
+      </a>
+      <a href="#" class="sp-nav-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        <span>Create</span>
+      </a>
+    </nav>
+  </div>
 
-          <div class="controls">
-            <div class="control-row spotify-controls">
-              <button id="prevBtn" class="control-icon-btn" aria-label="Previous">Prev</button>
-              <button id="playPauseBtn" class="play-main-btn" aria-label="Play or Pause">Play</button>
-              <button id="nextBtn" class="control-icon-btn" aria-label="Next">Next</button>
-              <button id="openMiniBtn" class="control-icon-btn" aria-label="Open Mini Player">Mini Player</button>
-              <a id="downloadBtn" class="btn btn-ghost download-btn" href="#">Download</a>
-            </div>
+  <audio id="audioPlayer" preload="metadata" crossorigin="anonymous"></audio>
 
-            <div class="progress-block">
-              <div class="progress-meta"><span class="muted">Playback</span><span class="muted"><span id="currentTime">0:00</span> / <span id="totalTime">0:00</span></span></div>
-              <input id="progressBar" class="range spotify-range" type="range" min="0" max="100" value="0" />
-            </div>
-            <div class="volume-block">
-              <label class="muted">Volume</label>
-              <input id="volumeBar" class="range spotify-range" type="range" min="0" max="1" step="0.01" value="1" />
-            </div>
-          </div>
-        </section>
-
-        <section class="card glass now-eq-card now-eq-card-clean">
-          <div class="row">
-            <h3>Equalizer</h3>
-            <button id="resetEqBtn" class="btn btn-ghost" type="button">Reset EQ</button>
-          </div>
-          <div class="eq-grid">
-            <div class="eq-field">
-              <small class="muted">Bass</small>
-              <input id="bassEq" class="range spotify-range" type="range" min="-12" max="12" step="1" value="0" />
-            </div>
-            <div class="eq-field">
-              <small class="muted">Mid</small>
-              <input id="midEq" class="range spotify-range" type="range" min="-12" max="12" step="1" value="0" />
-            </div>
-            <div class="eq-field">
-              <small class="muted">Treble</small>
-              <input id="trebleEq" class="range spotify-range" type="range" min="-12" max="12" step="1" value="0" />
-            </div>
-          </div>
-          <div id="eqVisualizer" class="eq-visualizer" aria-hidden="true"></div>
-        </section>
-      </div>
-
-      <div class="queue-side queue-side-clean">
-        <aside class="card glass queue-card queue-card-clean">
-          <div class="queue-head">
-            <div>
-              <h3>Queue</h3>
-              <p class="muted">Click any track to play instantly</p>
-            </div>
-            <span id="queueCountBadge" class="player-chip">0 songs</span>
-          </div>
-          <div id="queueList" class="queue-list spotify-queue-list"></div>
-        </aside>
-      </div>
-    </section>
-
-    <audio id="audioPlayer" preload="metadata" crossorigin="anonymous"></audio>
-  </main>
-
-  <footer class="site-footer">
-    <div class="site-footer-top">
-      <div>
-        <h4>xodisharemix</h4>
-        <p>Learning, building, improving - everyday.</p>
-      </div>
-      <div>
-        <h4>Quick Links</h4>
-        <a href="/index.html">Home</a>
-        <a href="/player.html">Player</a>
-        <a href="/dashboard.html">Dashboard</a>
-        <a href="/admin.html">Admin</a>
-      </div>
-      <div>
-        <h4>Contact</h4>
-        <p>Email: prabinakumarsahu28@gmail.com</p>
-        <p>Location: parjang, dhenkanal, odisha</p>
-      </div>
-    </div>
-    <div class="site-footer-bottom">
-      (c) 2026 prabina kumar sahu | All rights reserved
-    </div>
-  </footer>
+  <!-- Old UI buttons hidden to keep JS happy without massive rewrites if it expects them -->
+  <div style="display:none;" id="legacyUI">
+     <button id="prevBtn">Prev</button>
+     <button id="playPauseBtn">Play</button>
+     <button id="nextBtn">Next</button>
+     <button id="openMiniBtn">Mini Player</button>
+     <a id="downloadBtn" href="#">Download</a>
+     <span id="currentTime">0:00</span>
+     <span id="totalTime">0:00</span>
+     <input id="progressBar" type="range" min="0" max="100" value="0" />
+     <input id="volumeBar" type="range" min="0" max="1" step="0.01" value="1" />
+     <button id="resetEqBtn">Reset EQ</button>
+     
+     <script>
+        // Provide mock inputs for EQ
+        const dummyInput = () => {
+           let i = document.createElement('input'); 
+           i.type='range'; 
+           return i;
+        };
+        ['bassEq', 'midEq', 'trebleEq', 'bassEqQueue', 'midEqQueue', 'trebleEqQueue', 'resetEqBtnQueue'].forEach(id => {
+           if(!document.getElementById(id)) {
+             let el = id.includes('Btn') ? document.createElement('button') : dummyInput();
+             el.id = id;
+             document.getElementById('legacyUI').appendChild(el);
+           }
+        });
+     </script>
+     
+     <div id="eqVisualizer"></div>
+     <div id="queueEqVisualizer"></div>
+     <span id="playerCategoryBadge">Loading</span>
+  </div>
 
   <script src="/js/common.js"></script>
   <script src="/js/player.js"></script>
 </body>
 </html>
-
