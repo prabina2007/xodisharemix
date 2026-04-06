@@ -21,17 +21,6 @@
   </nav>
 
   <main class="container player-wrap dj-player-wrap">
-    <section class="dj-hero glass card">
-      <div>
-        <span class="player-badge">DJ MODE</span>
-        <h1>Build your own live queue</h1>
-        <p class="muted">Load songs into Deck A or Deck B, mix them with the crossfader, and add tracks into the queue only when you want them there.</p>
-      </div>
-      <div class="dj-hero-status">
-        <div class="dj-status-pill"><span class="dj-status-dot"></span> Queue starts empty</div>
-        <div class="dj-status-pill">Dual Deck Ready</div>
-      </div>
-    </section>
 
     <section class="dj-console">
       <article class="dj-deck card glass" data-deck="A">
@@ -49,7 +38,7 @@
         </div>
         <div class="dj-meta-row">
           <span id="deckATime" class="dj-time-readout">0:00 / 0:00</span>
-          <span id="deckARateLabel" class="dj-rate-readout">Tempo 100%</span>
+          <span id="deckABpmLabel" class="dj-rate-readout">BPM 120</span>
         </div>
         <input id="deckASeek" class="range spotify-range dj-seek" type="range" min="0" max="100" value="0" />
         <div class="dj-button-row">
@@ -63,8 +52,8 @@
             <input id="deckAVolume" class="range spotify-range" type="range" min="0" max="1" step="0.01" value="1" />
           </label>
           <label class="dj-slider-card">
-            <span>Tempo</span>
-            <input id="deckARate" class="range spotify-range" type="range" min="0.75" max="1.25" step="0.01" value="1" />
+            <span>BPM</span>
+            <input id="deckABpm" class="range spotify-range" type="range" min="70" max="170" step="1" value="120" />
           </label>
         </div>
       </article>
@@ -97,6 +86,7 @@
           <input id="masterVolume" class="range spotify-range" type="range" min="0" max="1" step="0.01" value="1" />
         </label>
         <div class="dj-mixer-actions">
+          <button id="masterPlayPauseBtn" class="play-main-btn" type="button">Master Play</button>
           <button id="queueToDeckABtn" class="control-icon-btn" type="button">Load Queue Top to A</button>
           <button id="queueToDeckBBtn" class="control-icon-btn" type="button">Load Queue Top to B</button>
         </div>
@@ -117,7 +107,7 @@
         </div>
         <div class="dj-meta-row">
           <span id="deckBTime" class="dj-time-readout">0:00 / 0:00</span>
-          <span id="deckBRateLabel" class="dj-rate-readout">Tempo 100%</span>
+          <span id="deckBBpmLabel" class="dj-rate-readout">BPM 120</span>
         </div>
         <input id="deckBSeek" class="range spotify-range dj-seek" type="range" min="0" max="100" value="0" />
         <div class="dj-button-row">
@@ -131,8 +121,8 @@
             <input id="deckBVolume" class="range spotify-range" type="range" min="0" max="1" step="0.01" value="1" />
           </label>
           <label class="dj-slider-card">
-            <span>Tempo</span>
-            <input id="deckBRate" class="range spotify-range" type="range" min="0.75" max="1.25" step="0.01" value="1" />
+            <span>BPM</span>
+            <input id="deckBBpm" class="range spotify-range" type="range" min="70" max="170" step="1" value="120" />
           </label>
         </div>
       </article>
@@ -209,3 +199,4 @@
   <script src="/js/player.js"></script>
 </body>
 </html>
+

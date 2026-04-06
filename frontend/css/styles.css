@@ -3719,47 +3719,6 @@ main {
   gap: 22px;
 }
 
-.dj-hero {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 22px 24px;
-  border-radius: 24px;
-  background: linear-gradient(180deg, rgba(24, 24, 24, 0.96), rgba(14, 14, 14, 0.96));
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.dj-hero h1 {
-  margin: 8px 0 10px;
-  font-size: clamp(2rem, 4vw, 3rem);
-}
-
-.dj-hero-status {
-  display: grid;
-  gap: 10px;
-  justify-items: end;
-}
-
-.dj-status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  font-weight: 600;
-}
-
-.dj-status-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #1ed760;
-  box-shadow: 0 0 16px rgba(30, 215, 96, 0.8);
-}
-
 .dj-console {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 0.62fr) minmax(0, 1fr);
@@ -4084,15 +4043,6 @@ main {
 }
 
 @media (max-width: 780px) {
-  .dj-hero {
-    grid-template-columns: 1fr;
-    display: grid;
-  }
-
-  .dj-hero-status {
-    justify-items: start;
-  }
-
   .dj-deck,
   .dj-mixer,
   .dj-queue-card,
@@ -4156,5 +4106,63 @@ main {
 
   .dj-button-row .dj-download-btn {
     grid-column: 1 / -1;
+  }
+}
+
+
+.dj-library-actions,
+.dj-queue-item-actions {
+  gap: 8px;
+}
+
+.dj-mini-btn,
+.dj-library-btn {
+  min-height: 34px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 11px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  box-shadow: none;
+}
+
+.dj-library-actions .dj-library-btn {
+  flex: 1 1 92px;
+  justify-content: center;
+}
+
+.dj-queue-item-actions .dj-mini-btn {
+  min-width: 64px;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.dj-queue-item-actions .dj-mini-btn:hover,
+.dj-library-actions .dj-library-btn:hover {
+  transform: translateY(-1px);
+}
+
+.dj-library-actions .btn.btn-primary.dj-library-btn {
+  background: linear-gradient(180deg, #1ed760, #17b752);
+  color: #08110c;
+}
+
+.dj-library-actions .btn.btn-ghost.dj-library-btn,
+.dj-queue-item-actions .btn.btn-ghost.dj-mini-btn {
+  color: #e5e7eb;
+}
+
+@media (max-width: 780px) {
+  .dj-mini-btn,
+  .dj-library-btn {
+    min-height: 36px;
+    height: 36px;
+    font-size: 0.76rem;
+    padding: 0 10px;
+  }
+
+  .dj-queue-item-actions {
+    padding-left: 56px;
   }
 }
