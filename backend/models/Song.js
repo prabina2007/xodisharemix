@@ -6,7 +6,7 @@ const songSchema = new mongoose.Schema(
     artist: { type: String, required: true, trim: true },
     category: {
       type: String,
-      enum: ['trending_latest', 'sound_check', 'private_track', 'bhajan_mix'],
+      enum: ['trending_latest', 'sound_check', 'private_track', 'drop', 'bhajan_mix'],
       required: true,
     },
     imagePath: { type: String, default: '/assets/logo.jpg' },
@@ -19,3 +19,4 @@ const songSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model('Song', songSchema);
+

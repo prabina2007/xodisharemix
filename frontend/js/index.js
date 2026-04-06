@@ -116,6 +116,7 @@ const loadHomepage = async (search = '') => {
     renderCategorySection('Trending / Latest', songs.filter((s) => s.category === 'trending_latest'), 'trendingGrid');
     renderCategorySection('Sound Check', songs.filter((s) => s.category === 'sound_check'), 'soundGrid');
     renderCategorySection('Private Track', songs.filter((s) => s.category === 'private_track'), 'privateGrid');
+    renderCategorySection('Drop', songs.filter((s) => s.category === 'drop'), 'dropGrid');
     renderCategorySection('Bhajan Mix', songs.filter((s) => s.category === 'bhajan_mix'), 'bhajanGrid');
     renderSearchResults(searchSongs, search);
 
@@ -155,3 +156,4 @@ window.addEventListener('DOMContentLoaded', () => {
   const cta = document.getElementById('ctaCreate');
   if (cta) cta.addEventListener('click', () => (window.location.href = '/login.html'));
 });
+

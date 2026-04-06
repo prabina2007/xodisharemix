@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 
-const validCategories = ['trending_latest', 'sound_check', 'private_track', 'bhajan_mix'];
+const validCategories = ['trending_latest', 'sound_check', 'private_track', 'drop', 'bhajan_mix'];
 const appRoot = path.resolve(__dirname, '..', '..');
 const uploadsRoot = path.join(appRoot, 'backend', 'uploads');
 
@@ -44,3 +44,4 @@ const uploadSongAssets = multer({
 });
 
 module.exports = { uploadSongAssets, validCategories };
+

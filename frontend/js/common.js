@@ -5,6 +5,7 @@ const categories = [
   { key: 'trending_latest', label: 'Trending / Latest' },
   { key: 'sound_check', label: 'Sound Check' },
   { key: 'private_track', label: 'Private Track' },
+  { key: 'drop', label: 'Drop' },
   { key: 'bhajan_mix', label: 'Bhajan Mix' },
 ];
 
