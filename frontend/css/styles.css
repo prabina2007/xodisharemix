@@ -1775,8 +1775,8 @@ a {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  height: 520px;
-  max-height: 520px;
+  height: auto;
+  max-height: none;
   overflow: hidden;
 }
 
@@ -3490,8 +3490,8 @@ main {
 
 .player-page .queue-card-clean {
   width: 100%;
-  height: min(520px, 62vh);
-  max-height: min(520px, 62vh);
+  height: auto;
+  max-height: none;
 }
 
 .player-page .queue-card-clean .queue-list {
@@ -3703,4 +3703,5 @@ main {
     grid-template-columns: 1fr 1fr;
   }
 }
+
 

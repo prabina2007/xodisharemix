@@ -132,10 +132,9 @@ const syncQueueCardHeight = () => {
   }
 
   const nowHeight = Math.ceil(nowCard.getBoundingClientRect().height);
-  const idealHeight = Math.max(420, Math.min(nowHeight, 560));
-  queueCard.style.height = `${idealHeight}px`;
-  queueCard.style.minHeight = `${idealHeight}px`;
-  queueCard.style.maxHeight = `${idealHeight}px`;
+  queueCard.style.height = `${nowHeight}px`;
+  queueCard.style.minHeight = `${nowHeight}px`;
+  queueCard.style.maxHeight = `${nowHeight}px`;
 };
 
 const createVisualizerBars = (rootId, count = 34) => {
@@ -490,4 +489,5 @@ window.addEventListener('DOMContentLoaded', async () => {
     cover.addEventListener('load', syncQueueCardHeight);
   }
 });
+
 
