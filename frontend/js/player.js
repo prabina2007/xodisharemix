@@ -10,6 +10,7 @@ let mixerReady = false;
 let masterGain;
 let meterFrame;
 let crossfadeBusy = false;
+let transitionFrame;
 
 const getSongBaseBpm = (song) => {
   const value = Number(song?.bpm);
@@ -103,6 +104,11 @@ const updateMixerGains = () => {
   });
 };
 
+const setDeckVolumes = (aVolume = 1, bVolume = 1) => {
+  if (deckState.A.audio) deckState.A.audio.volume = Math.max(0, Math.min(1, aVolume));
+  if (deckState.B.audio) deckState.B.audio.volume = Math.max(0, Math.min(1, bVolume));
+};
+
 const setCrossfaderUi = (value) => {
   crossfaderValue = Math.max(0, Math.min(1, value));
   const control = document.getElementById('crossfader');
@@ -123,6 +129,37 @@ const animateCrossfaderTo = (target, duration = 900) => new Promise((resolve) =>
   requestAnimationFrame(frame);
 });
 
+const animateDeckTransition = (fromKey, toKey, duration = 950) => new Promise((resolve) => {
+  const startCross = crossfaderValue;
+  const targetCross = toKey === 'A' ? 0 : 1;
+  const startedAt = performance.now();
+
+  if (transitionFrame) cancelAnimationFrame(transitionFrame);
+
+  const frame = (time) => {
+    const progress = Math.min(1, (time - startedAt) / duration);
+    const eased = 1 - ((1 - progress) ** 3);
+    const currentCross = startCross + ((targetCross - startCross) * eased);
+    const fadeOut = Math.max(0.02, 1 - eased);
+    const fadeIn = Math.min(1, 0.14 + (eased * 0.86));
+
+    setCrossfaderUi(currentCross);
+    setDeckVolumes(
+      fromKey === 'A' ? fadeOut : fadeIn,
+      fromKey === 'B' ? fadeOut : fadeIn,
+    );
+
+    if (progress < 1) {
+      transitionFrame = requestAnimationFrame(frame);
+      return;
+    }
+
+    transitionFrame = null;
+    resolve();
+  };
+
+  transitionFrame = requestAnimationFrame(frame);
+});
 const initMixer = () => {
   if (mixerReady || !window.AudioContext) return;
   audioContext = new window.AudioContext();
@@ -199,6 +236,7 @@ const loadDeck = async (deckKey, song, autoplay = false) => {
   deck.audio.pause();
   deck.audio.src = resolveMediaUrl(song.songPath);
   deck.audio.currentTime = 0;
+  deck.audio.volume = 1;
   deck.audio.playbackRate = deck.rate;
   updateDeckReadout(deck);
   updateMixerGains();
@@ -263,8 +301,10 @@ const smoothSwitchDeck = async () => {
   if (toDeck.audio.paused) {
     try { await toDeck.audio.play(); } catch (_error) {}
   }
-  await animateCrossfaderTo(toKey === 'A' ? 0 : 1, 950);
+  await animateDeckTransition(fromKey, toKey, 1050);
   if (!fromDeck.audio.paused) fromDeck.audio.pause();
+  setCrossfaderUi(toKey === 'A' ? 0 : 1);
+  setDeckVolumes(1, 1);
   updateDeckReadout(fromDeck);
   updateDeckReadout(toDeck);
   crossfadeBusy = false;
@@ -341,9 +381,9 @@ const renderLibrary = () => {
           <span class="song-open-hint">Ready to mix</span>
         </div>
         <div class="dj-library-actions">
-          <button class="btn btn-primary dj-library-btn" onclick="loadSongToDeck('A', '${song._id}')">Load A</button>
-          <button class="btn btn-ghost dj-library-btn" onclick="loadSongToDeck('B', '${song._id}')">Load B</button>
-          <button class="btn btn-ghost dj-library-btn" onclick="addSongToQueue('${song._id}')">Add Queue</button>
+          <button class="btn btn-primary dj-library-btn" onclick="loadSongToDeck('A', '${song._id}')">A</button>
+          <button class="btn btn-ghost dj-library-btn" onclick="loadSongToDeck('B', '${song._id}')">B</button>
+          <button class="btn btn-ghost dj-library-btn" onclick="addSongToQueue('${song._id}')">Queue</button>
         </div>
       </div>
     </article>

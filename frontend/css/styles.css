@@ -4166,3 +4166,92 @@ main {
     padding-left: 56px;
   }
 }
+
+/* mobile-dj-polish */
+.dj-library-actions .dj-library-btn {
+  flex: 1 1 68px;
+}
+
+.dj-queue-item-actions .dj-mini-btn {
+  min-width: 58px;
+}
+
+@media (max-width: 780px) {
+  .player-wrap {
+    padding: 30px 0;
+  }
+
+  .dj-console {
+    gap: 14px;
+  }
+
+  .nav-actions .btn {
+    min-height: 40px;
+  }
+
+  .dj-mini-btn,
+  .dj-library-btn {
+    font-size: 0.74rem;
+    padding: 0 8px;
+  }
+
+  .dj-queue-list {
+    max-height: 340px;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dj-library-card .song-body {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 560px) {
+  .player-wrap {
+    padding: 22px 0 30px;
+  }
+
+  .nav-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .nav-actions .btn {
+    width: 100%;
+    padding-inline: 12px;
+    font-size: 0.82rem;
+  }
+
+  .dj-mixer-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dj-mixer-actions #masterPlayPauseBtn {
+    grid-column: 1 / -1;
+  }
+
+  .dj-secondary-grid {
+    gap: 14px;
+  }
+
+  .dj-queue-head {
+    align-items: flex-start;
+  }
+
+  .dj-queue-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .dj-queue-item-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    padding-left: 0;
+  }
+
+  .dj-library-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
