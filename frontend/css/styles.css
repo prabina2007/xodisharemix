@@ -4262,3 +4262,256 @@ main {
   }
 }
 
+
+/* mobile-size-balance */
+@media (max-width: 780px) {
+  .dj-deck,
+  .dj-mixer,
+  .dj-queue-card,
+  .dj-tips {
+    padding: 18px;
+  }
+
+  .dj-track-copy h2 {
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .dj-track-copy p,
+  .dj-tip-list,
+  .dj-meta-row,
+  .dj-cross-labels,
+  .dj-slider-card span,
+  .dj-level span,
+  .dj-queue-head p,
+  .player-recent-head p {
+    font-size: 0.96rem;
+  }
+
+  .dj-button-row .play-main-btn,
+  .dj-button-row .control-icon-btn,
+  .dj-button-row .dj-download-btn,
+  .dj-mixer-actions .play-main-btn,
+  .dj-mixer-actions .control-icon-btn,
+  .dj-queue-actions .btn,
+  .nav-actions .btn {
+    min-height: 44px;
+    font-size: 0.88rem;
+    padding-inline: 14px;
+  }
+
+  .dj-mini-btn,
+  .dj-library-btn {
+    min-height: 40px;
+    height: 40px;
+    font-size: 0.84rem;
+    padding: 0 10px;
+  }
+
+  .dj-queue-cover {
+    width: 56px;
+    height: 56px;
+  }
+
+  .dj-queue-copy strong {
+    font-size: 0.98rem;
+  }
+
+  .dj-queue-copy small {
+    font-size: 0.88rem;
+  }
+
+  .player-recent-grid .song-body h4 {
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+
+  .player-recent-grid .song-meta,
+  .player-recent-grid .song-card-footer,
+  .player-recent-grid .song-open-hint {
+    font-size: 0.86rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .dj-track-copy h2 {
+    font-size: 1.34rem;
+  }
+
+  .dj-deck-label,
+  .player-chip,
+  .player-badge {
+    font-size: 0.78rem;
+    padding: 8px 12px;
+  }
+
+  .dj-button-row,
+  .dj-mixer-actions,
+  .dj-library-actions,
+  .dj-queue-item-actions {
+    gap: 10px;
+  }
+
+  .dj-queue-item {
+    gap: 14px;
+  }
+
+  .player-recent-grid.dj-library-grid {
+    gap: 14px;
+  }
+
+  .player-recent-grid .song-body {
+    gap: 10px;
+  }
+}
+
+
+/* light-theme-overrides */
+[data-theme='light'] body {
+  color: #102217;
+  background: linear-gradient(180deg, #f7fcf8, #eef8f0);
+}
+
+[data-theme='light'] .navbar,
+[data-theme='light'] .xodi-nav {
+  background: rgba(255, 255, 255, 0.88);
+  border-bottom-color: rgba(29, 185, 84, 0.14);
+  box-shadow: 0 14px 30px rgba(20, 40, 27, 0.08);
+}
+
+[data-theme='light'] .brand,
+[data-theme='light'] .xodi-brand,
+[data-theme='light'] .xodi-menu a,
+[data-theme='light'] .nav-actions .btn,
+[data-theme='light'] .xodi-actions .btn {
+  color: #102217;
+}
+
+[data-theme='light'] .btn.btn-ghost {
+  background: #ffffff;
+  border-color: rgba(29, 185, 84, 0.16);
+  color: #102217;
+}
+
+[data-theme='light'] .glass,
+[data-theme='light'] .card,
+[data-theme='light'] .song-card,
+[data-theme='light'] .xodi-overview-strip,
+[data-theme='light'] .xodi-highlight-card,
+[data-theme='light'] .search-results-panel,
+[data-theme='light'] .dashboard-simple-card,
+[data-theme='light'] .upload-panel,
+[data-theme='light'] .dashboard-side-panel,
+[data-theme='light'] .dj-deck,
+[data-theme='light'] .dj-mixer,
+[data-theme='light'] .dj-queue-card,
+[data-theme='light'] .dj-tips,
+[data-theme='light'] .queue-item,
+[data-theme='light'] .admin-topbar-modern,
+[data-theme='light'] .admin-hero-card,
+[data-theme='light'] .admin-stat-card-modern,
+[data-theme='light'] .admin-table-card-modern {
+  background: linear-gradient(180deg, #ffffff, #f3fbf5);
+  border-color: rgba(29, 185, 84, 0.12);
+  box-shadow: 0 18px 34px rgba(19, 41, 28, 0.08);
+}
+
+[data-theme='light'] .xodi-home .xodi-content,
+[data-theme='light'] .player-page,
+[data-theme='light'] .dashboard-page {
+  background: linear-gradient(180deg, #f7fcf8, #eef8f0);
+}
+
+[data-theme='light'] .xodi-hero-overlay {
+  background: linear-gradient(180deg, rgba(247, 252, 248, 0.26), rgba(247, 252, 248, 0.58));
+}
+
+[data-theme='light'] .xodi-hero-copy h1,
+[data-theme='light'] .xodi-hero-copy p,
+[data-theme='light'] .xodi-hero-copy .xodi-sub,
+[data-theme='light'] .section-title,
+[data-theme='light'] h1,
+[data-theme='light'] h2,
+[data-theme='light'] h3,
+[data-theme='light'] h4,
+[data-theme='light'] .dj-track-copy h2,
+[data-theme='light'] .dj-queue-copy strong,
+[data-theme='light'] .admin-hero-card h1,
+[data-theme='light'] .admin-table-head h3 {
+  color: #102217;
+}
+
+[data-theme='light'] .muted,
+[data-theme='light'] .song-meta,
+[data-theme='light'] .dj-track-copy p,
+[data-theme='light'] .dj-tip-list,
+[data-theme='light'] .admin-hero-card p,
+[data-theme='light'] .admin-table-head p,
+[data-theme='light'] .site-footer p,
+[data-theme='light'] .site-footer a {
+  color: #567160;
+}
+
+[data-theme='light'] .player-chip,
+[data-theme='light'] .player-badge,
+[data-theme='light'] .dj-deck-label,
+[data-theme='light'] .dashboard-section-badge,
+[data-theme='light'] .admin-table-badge {
+  background: linear-gradient(180deg, #e8f9ee, #f6fff9);
+  color: #17813e;
+  border-color: rgba(29, 185, 84, 0.18);
+}
+
+[data-theme='light'] .dj-deck-screen,
+[data-theme='light'] .dj-crossfader-wrap,
+[data-theme='light'] .dj-slider-card,
+[data-theme='light'] .upload-preview-card,
+[data-theme='light'] .upload-field-card,
+[data-theme='light'] .admin-hero-mini-card {
+  background: linear-gradient(180deg, #f7fdf8, #eef8f0);
+  border-color: rgba(29, 185, 84, 0.12);
+}
+
+[data-theme='light'] .site-footer {
+  background: #f3fbf5;
+  color: #102217;
+  border-top: 1px solid rgba(29, 185, 84, 0.12);
+}
+
+[data-theme='light'] .site-footer-bottom {
+  border-top-color: rgba(29, 185, 84, 0.12);
+  color: #567160;
+}
+
+[data-theme='light'] .input,
+[data-theme='light'] select.input {
+  background: #ffffff;
+  border-color: rgba(29, 185, 84, 0.14);
+  color: #102217;
+}
+
+[data-theme='light'] .input::placeholder {
+  color: #7a8d80;
+}
+
+[data-theme='light'] .admin-page {
+  background: linear-gradient(180deg, #f7fcf8 0%, #eef8f0 52%, #f9fdf9 100%);
+}
+
+[data-theme='light'] .mini-corner-player {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(29, 185, 84, 0.16);
+  box-shadow: 0 16px 36px rgba(17, 37, 25, 0.12);
+}
+
+[data-theme='light'] .mini-corner-meta strong,
+[data-theme='light'] .mini-corner-meta small {
+  color: #102217;
+}
+
+[data-theme='light'] .mini-corner-btn {
+  background: #ffffff;
+  border-color: rgba(29, 185, 84, 0.14);
+  color: #102217;
+}
+

@@ -1,5 +1,6 @@
 const API_BASE = window.location.origin;
 const MINI_RESUME_KEY = 'xodiMiniResume';
+const THEME_KEY = 'xodiTheme';
 
 const categories = [
   { key: 'trending_latest', label: 'Trending / Latest' },
