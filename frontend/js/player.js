@@ -81,6 +81,44 @@ const renderQueue = () => {
   updatePlayerMeta();
 };
 
+const renderRecentSongCards = () => {
+  const root = document.getElementById('playerRecentGrid');
+  if (!root) return;
+
+  const recentSongs = [...queue];
+  if (!recentSongs.length) {
+    root.innerHTML = '<p class="muted">No recent uploads yet.</p>';
+    return;
+  }
+
+  root.innerHTML = recentSongs
+    .map((song) => `
+      <article class="song-card glass song-card-interactive player-recent-card" onclick="playSongById('${song._id}')">
+        <div class="cover-wrap">
+          <img class="song-cover" src="${resolveMediaUrl(song.imagePath)}" alt="${song.title}" />
+          <button class="btn btn-primary play-overlay-btn" onclick="event.stopPropagation(); playSongById('${song._id}')">Play</button>
+        </div>
+        <div class="song-body">
+          <h4>${song.title}</h4>
+          <p class="song-meta">${song.artist}</p>
+          <div class="song-card-footer">
+            <small class="muted">${categoryLabel(song.category)}</small>
+            <span class="song-open-hint">Play now</span>
+          </div>
+        </div>
+      </article>`)
+    .join('');
+};
+
+const playSongById = async (id) => {
+  const idx = queue.findIndex((song) => song._id === id);
+  if (idx < 0) return;
+  await playIndex(idx, true);
+  const top = document.querySelector('.player-wrap');
+  if (top) top.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+window.playSongById = playSongById;
 const syncQueueCardHeight = () => {
   const nowCard = document.querySelector('.now-playing-card');
   const queueCard = document.querySelector('.queue-card');
@@ -342,6 +380,7 @@ const loadSong = async (song, forcePlay = true) => {
 
   setPlayPauseLabel();
   renderQueue();
+  renderRecentSongCards();
   syncQueueCardHeight();
 };
 
@@ -442,6 +481,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   setPlayPauseLabel();
   renderQueue();
+  renderRecentSongCards();
   syncQueueCardHeight();
   window.addEventListener('resize', syncQueueCardHeight);
 
