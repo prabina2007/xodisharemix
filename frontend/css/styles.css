@@ -359,10 +359,29 @@ a {
 }
 
 .queue-list {
-  max-height: 450px;
-  overflow: auto;
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
   display: grid;
   gap: 8px;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 6px;
+}
+
+/* Custom sleek scrollbar for the queue list */
+.queue-list::-webkit-scrollbar {
+  width: 5px;
+}
+.queue-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+}
+.queue-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+}
+.queue-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .queue-item {
