@@ -1,4 +1,5 @@
 const path = require('path');
+const { Readable } = require('stream');
 const Song = require('../models/Song');
 const cloudinary = require('../config/cloudinary');
 const { validCategories } = require('../utils/upload');
@@ -6,6 +7,27 @@ const { safeUnlink, uploadToCloudinary } = require('../utils/songAssets');
 
 const appRoot = path.resolve(__dirname, '..', '..');
 const uploadsRoot = path.join(appRoot, 'backend', 'uploads');
+
+const sanitizeFileSegment = (value) => String(value || '')
+  .replace(/[<>:"/\\|?*]+/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
+
+const getSongExtension = (songPath) => {
+  try {
+    const parsed = new URL(songPath);
+    const ext = path.extname(parsed.pathname);
+    return ext || '.mp3';
+  } catch (_error) {
+    return path.extname(songPath || '') || '.mp3';
+  }
+};
+
+const buildDownloadName = (song, ext = '.mp3') => {
+  const title = sanitizeFileSegment(song?.title || 'track');
+  const artist = sanitizeFileSegment(song?.artist || 'artist');
+  return `${title} - ${artist} - xodisharemix${ext}`;
+};
 
 const uploadSong = async (req, res) => {
   const imageFile = req.files?.image?.[0] || null;
@@ -140,17 +162,24 @@ const downloadSong = async (req, res) => {
     }
 
     if (song.songPublicId) {
-      const downloadUrl = cloudinary.url(song.songPublicId, {
-        resource_type: 'video',
-        flags: 'attachment',
-        secure: true,
-      });
-      return res.redirect(downloadUrl);
+      const sourceResponse = await fetch(song.songPath);
+
+      if (!sourceResponse.ok || !sourceResponse.body) {
+        throw new Error('Unable to fetch song from cloud storage');
+      }
+
+      const ext = getSongExtension(song.songPath);
+      const fileName = buildDownloadName(song, ext);
+      res.setHeader('Content-Type', sourceResponse.headers.get('content-type') || 'audio/mpeg');
+      res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+      Readable.fromWeb(sourceResponse.body).pipe(res);
+      return;
     }
 
     const relativeSongPath = song.songPath.replace(/^\/uploads\//, '').replace(/\//g, path.sep);
     const absPath = path.join(uploadsRoot, relativeSongPath);
-    return res.download(absPath);
+    const fileName = buildDownloadName(song, path.extname(absPath) || '.mp3');
+    return res.download(absPath, fileName);
   } catch (error) {
     return res.status(500).json({
       message: 'Failed to download song',

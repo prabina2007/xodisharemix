@@ -55,6 +55,11 @@ const formatTime = (seconds) => {
 
 const deckMixWeight = (deckKey) => (deckKey === 'A' ? 1 - crossfaderValue : crossfaderValue);
 
+const formatDownloadName = (song) => {
+  if (!song) return '';
+  return `${song.title} - ${song.artist} - xodisharemix`;
+};
+
 const setDeckButtonLabel = (deck) => {
   if (!deck.elements.playBtn || !deck.audio) return;
   deck.elements.playBtn.textContent = deck.audio.paused ? 'Play' : 'Pause';
@@ -85,7 +90,7 @@ const updateDeckReadout = (deck) => {
     : 'Mix a second track when you are ready.');
   elements.category.textContent = song ? categoryLabel(song.category) : 'No track';
   elements.download.href = song ? `${API_BASE}/api/songs/${song._id}/download` : '#';
-  elements.download.setAttribute('download', song?.title || '');
+  elements.download.setAttribute('download', formatDownloadName(song));
   elements.time.textContent = `${formatTime(audio?.currentTime || 0)} / ${formatTime(audio?.duration || 0)}`;
   elements.bpmLabel.textContent = `BPM ${Math.round(deck.currentBpm)}`;
   elements.seek.value = audio?.duration ? String((audio.currentTime / audio.duration) * 100) : '0';

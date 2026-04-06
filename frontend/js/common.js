@@ -119,7 +119,7 @@ const initMiniCornerPlayer = async () => {
     title.textContent = song.title;
     artist.textContent = song.artist;
     download.href = `${API_BASE}/api/songs/${song._id}/download`;
-    download.setAttribute('download', song.title);
+    download.setAttribute('download', `${song.title} - ${song.artist} - xodisharemix`);
     currentTime.textContent = '0:00';
     totalTime.textContent = '0:00';
   };
