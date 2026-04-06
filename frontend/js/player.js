@@ -87,11 +87,17 @@ const syncQueueCardHeight = () => {
   if (!nowCard || !queueCard) return;
 
   if (window.matchMedia('(max-width: 900px)').matches) {
+    queueCard.style.height = '';
     queueCard.style.minHeight = '';
+    queueCard.style.maxHeight = '';
     return;
   }
 
-  queueCard.style.minHeight = `${Math.ceil(nowCard.getBoundingClientRect().height)}px`;
+  const nowHeight = Math.ceil(nowCard.getBoundingClientRect().height);
+  const idealHeight = Math.max(420, Math.min(nowHeight, 560));
+  queueCard.style.height = `${idealHeight}px`;
+  queueCard.style.minHeight = `${idealHeight}px`;
+  queueCard.style.maxHeight = `${idealHeight}px`;
 };
 
 const createVisualizerBars = (rootId, count = 34) => {
@@ -444,8 +450,4 @@ window.addEventListener('DOMContentLoaded', async () => {
     cover.addEventListener('load', syncQueueCardHeight);
   }
 });
-
-
-
-
 
