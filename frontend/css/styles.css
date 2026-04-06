@@ -3705,3 +3705,456 @@ main {
 }
 
 
+
+.dj-player-page {
+  background:
+    linear-gradient(180deg, rgba(8, 8, 8, 0.92), rgba(8, 8, 8, 0.98)),
+    radial-gradient(circle at top, rgba(29, 185, 84, 0.12), transparent 40%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.025) 0 2px, transparent 2px 120px),
+    linear-gradient(180deg, #2b2116 0%, #15110e 100%);
+}
+
+.dj-player-wrap {
+  display: grid;
+  gap: 22px;
+}
+
+.dj-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 24px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(24, 24, 24, 0.96), rgba(14, 14, 14, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dj-hero h1 {
+  margin: 8px 0 10px;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.dj-hero-status {
+  display: grid;
+  gap: 10px;
+  justify-items: end;
+}
+
+.dj-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  font-weight: 600;
+}
+
+.dj-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #1ed760;
+  box-shadow: 0 0 16px rgba(30, 215, 96, 0.8);
+}
+
+.dj-console {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.62fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.dj-deck,
+.dj-mixer,
+.dj-queue-card,
+.dj-tips {
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(180deg, rgba(22, 22, 22, 0.97), rgba(12, 12, 12, 0.97));
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
+}
+
+.dj-deck {
+  padding: 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.dj-deck-head,
+.dj-queue-head,
+.dj-mixer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dj-deck-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+}
+
+.dj-deck-screen {
+  position: relative;
+  padding: 18px;
+  border-radius: 22px;
+  background: radial-gradient(circle at top, rgba(29, 185, 84, 0.18), transparent 58%), #090909;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.dj-deck-cover {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 10px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 4px rgba(29, 185, 84, 0.32), 0 20px 34px rgba(0, 0, 0, 0.35);
+}
+
+.dj-deck-wave {
+  position: absolute;
+  inset: auto 22px 20px;
+  height: 12px;
+  border-radius: 999px;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0 5px, transparent 5px 8px);
+  opacity: 0.75;
+}
+
+.dj-track-copy h2 {
+  margin: 0 0 6px;
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  line-height: 1.2;
+}
+
+.dj-track-copy p {
+  margin: 0;
+}
+
+.dj-meta-row,
+.dj-button-row,
+.dj-mixer-actions,
+.dj-library-actions,
+.dj-queue-item-actions,
+.dj-slider-grid {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.dj-meta-row {
+  justify-content: space-between;
+}
+
+.dj-time-readout,
+.dj-rate-readout {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.dj-seek {
+  margin-top: -2px;
+}
+
+.dj-download-btn {
+  min-width: 120px;
+  justify-content: center;
+}
+
+.dj-slider-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.dj-slider-card,
+.dj-master-card {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dj-slider-card span {
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dj-mixer {
+  padding: 18px;
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.dj-crossfader-wrap {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dj-cross-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.dj-crossfader {
+  width: 100%;
+}
+
+.dj-mixer-levels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.dj-level {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+
+.dj-level span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.dj-level-meter {
+  position: relative;
+  width: 18px;
+  height: 140px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.dj-level-meter i {
+  position: absolute;
+  inset: auto 0 0;
+  display: block;
+  height: 8%;
+  border-radius: inherit;
+  background: linear-gradient(180deg, #1ed760, #18b854);
+  transition: height 0.12s linear;
+}
+
+.dj-level-master .dj-level-meter i {
+  background: linear-gradient(180deg, #1ed760, #facc15);
+}
+
+.dj-secondary-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  gap: 18px;
+}
+
+.dj-queue-card,
+.dj-tips {
+  padding: 18px;
+}
+
+.dj-queue-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dj-queue-list {
+  min-height: 280px;
+  max-height: 420px;
+}
+
+.dj-empty-state {
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border-radius: 18px;
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 20px;
+}
+
+.dj-empty-state strong {
+  display: block;
+  font-size: 1.15rem;
+  margin-bottom: 8px;
+}
+
+.dj-queue-item {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.dj-queue-cover {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.dj-queue-copy {
+  min-width: 0;
+}
+
+.dj-queue-copy strong,
+.dj-queue-copy small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dj-mini-btn,
+.dj-library-btn {
+  min-height: 40px;
+}
+
+.dj-tips h3 {
+  margin: 10px 0 10px;
+}
+
+.dj-tip-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 10px;
+  color: #d1d5db;
+}
+
+.dj-library-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.dj-library-card .song-body {
+  display: grid;
+  gap: 10px;
+}
+
+.dj-library-footer {
+  margin-bottom: 2px;
+}
+
+.dj-library-actions {
+  justify-content: stretch;
+}
+
+.dj-library-actions .dj-library-btn {
+  flex: 1 1 120px;
+  justify-content: center;
+}
+
+@media (max-width: 1100px) {
+  .dj-console,
+  .dj-secondary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dj-mixer {
+    order: 3;
+  }
+}
+
+@media (max-width: 780px) {
+  .dj-hero {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .dj-hero-status {
+    justify-items: start;
+  }
+
+  .dj-deck,
+  .dj-mixer,
+  .dj-queue-card,
+  .dj-tips {
+    padding: 14px;
+    border-radius: 20px;
+  }
+
+  .dj-deck-screen {
+    padding: 14px;
+  }
+
+  .dj-slider-grid,
+  .dj-mixer-levels {
+    grid-template-columns: 1fr;
+  }
+
+  .dj-level-meter {
+    width: 100%;
+    height: 18px;
+  }
+
+  .dj-level-meter i {
+    inset: 0 auto 0 0;
+    width: 8%;
+    height: 100%;
+    transition: width 0.12s linear;
+  }
+
+  .dj-queue-item {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+
+  .dj-queue-item-actions {
+    grid-column: 1 / -1;
+    padding-left: 60px;
+  }
+
+  .dj-library-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .dj-library-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dj-button-row,
+  .dj-mixer-actions,
+  .dj-library-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dj-button-row .dj-download-btn,
+  .dj-mixer-actions > *,
+  .dj-library-actions > * {
+    min-width: 0;
+  }
+
+  .dj-button-row .dj-download-btn {
+    grid-column: 1 / -1;
+  }
+}

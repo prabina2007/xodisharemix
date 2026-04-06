@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Player | xodisharemix.com</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>DJ Player | xodisharemix.com</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
-<body class="player-page">
+<body class="player-page dj-player-page">
   <div id="pageLoader" class="page-loader"><div class="spinner"></div></div>
   <nav class="navbar">
     <div class="container nav-inner">
@@ -20,87 +20,165 @@
     </div>
   </nav>
 
-  <main class="container player-wrap">
-    <section class="player-layout spotify-player-layout player-layout-clean">
-      <div class="now-side">
-        <section class="card glass now-playing-card now-playing-card-clean">
-          <div class="player-card-top">
-            <span class="player-badge">NOW PLAYING</span>
-            <span id="playerCategoryBadge" class="player-chip">Loading</span>
-          </div>
-          <img id="songCover" class="cover-large spotify-cover" src="https://picsum.photos/seed/xodi-player/700/700" alt="Song cover" />
-          <h2 id="songTitle" class="now-title">Loading song...</h2>
-          <p id="songArtist" class="muted now-artist">Please wait</p>
-
-          <div class="controls">
-            <div class="control-row spotify-controls">
-              <button id="prevBtn" class="control-icon-btn" aria-label="Previous">Prev</button>
-              <button id="playPauseBtn" class="play-main-btn" aria-label="Play or Pause">Play</button>
-              <button id="nextBtn" class="control-icon-btn" aria-label="Next">Next</button>
-              <button id="openMiniBtn" class="control-icon-btn" aria-label="Open Mini Player">Mini Player</button>
-              <a id="downloadBtn" class="btn btn-ghost download-btn" href="#">Download</a>
-            </div>
-
-            <div class="progress-block">
-              <div class="progress-meta"><span class="muted">Playback</span><span class="muted"><span id="currentTime">0:00</span> / <span id="totalTime">0:00</span></span></div>
-              <input id="progressBar" class="range spotify-range" type="range" min="0" max="100" value="0" />
-            </div>
-            <div class="volume-block">
-              <label class="muted">Volume</label>
-              <input id="volumeBar" class="range spotify-range" type="range" min="0" max="1" step="0.01" value="1" />
-            </div>
-          </div>
-        </section>
-
-        <section class="card glass now-eq-card now-eq-card-clean">
-          <div class="row">
-            <h3>Equalizer</h3>
-            <button id="resetEqBtn" class="btn btn-ghost" type="button">Reset EQ</button>
-          </div>
-          <div class="eq-grid">
-            <div class="eq-field">
-              <small class="muted">Bass</small>
-              <input id="bassEq" class="range spotify-range" type="range" min="-12" max="12" step="1" value="0" />
-            </div>
-            <div class="eq-field">
-              <small class="muted">Mid</small>
-              <input id="midEq" class="range spotify-range" type="range" min="-12" max="12" step="1" value="0" />
-            </div>
-            <div class="eq-field">
-              <small class="muted">Treble</small>
-              <input id="trebleEq" class="range spotify-range" type="range" min="-12" max="12" step="1" value="0" />
-            </div>
-          </div>
-          <div id="eqVisualizer" class="eq-visualizer" aria-hidden="true"></div>
-        </section>
+  <main class="container player-wrap dj-player-wrap">
+    <section class="dj-hero glass card">
+      <div>
+        <span class="player-badge">DJ MODE</span>
+        <h1>Build your own live queue</h1>
+        <p class="muted">Load songs into Deck A or Deck B, mix them with the crossfader, and add tracks into the queue only when you want them there.</p>
       </div>
+      <div class="dj-hero-status">
+        <div class="dj-status-pill"><span class="dj-status-dot"></span> Queue starts empty</div>
+        <div class="dj-status-pill">Dual Deck Ready</div>
+      </div>
+    </section>
 
-      <div class="queue-side queue-side-clean">
-        <aside class="card glass queue-card queue-card-clean">
-          <div class="queue-head">
-            <div>
-              <h3>Queue</h3>
-              <p class="muted">Click any track to play instantly</p>
-            </div>
+    <section class="dj-console">
+      <article class="dj-deck card glass" data-deck="A">
+        <div class="dj-deck-head">
+          <span class="dj-deck-label">Deck A</span>
+          <span id="deckACategory" class="player-chip">No track</span>
+        </div>
+        <div class="dj-deck-screen">
+          <img id="deckACover" class="dj-deck-cover" src="/assets/logo.jpg" alt="Deck A cover" />
+          <div class="dj-deck-wave"></div>
+        </div>
+        <div class="dj-track-copy">
+          <h2 id="deckATitle">Load a song to Deck A</h2>
+          <p id="deckAArtist" class="muted">Choose any recent upload below.</p>
+        </div>
+        <div class="dj-meta-row">
+          <span id="deckATime" class="dj-time-readout">0:00 / 0:00</span>
+          <span id="deckARateLabel" class="dj-rate-readout">Tempo 100%</span>
+        </div>
+        <input id="deckASeek" class="range spotify-range dj-seek" type="range" min="0" max="100" value="0" />
+        <div class="dj-button-row">
+          <button id="deckAPlay" class="play-main-btn" type="button">Play</button>
+          <button id="deckACue" class="control-icon-btn" type="button">Cue</button>
+          <a id="deckADownload" class="btn btn-ghost download-btn dj-download-btn" href="#">Download</a>
+        </div>
+        <div class="dj-slider-grid">
+          <label class="dj-slider-card">
+            <span>Volume</span>
+            <input id="deckAVolume" class="range spotify-range" type="range" min="0" max="1" step="0.01" value="1" />
+          </label>
+          <label class="dj-slider-card">
+            <span>Tempo</span>
+            <input id="deckARate" class="range spotify-range" type="range" min="0.75" max="1.25" step="0.01" value="1" />
+          </label>
+        </div>
+      </article>
+
+      <section class="dj-mixer card glass">
+        <div class="dj-mixer-head">
+          <span class="dj-deck-label">Mixer</span>
+          <button id="syncDecksBtn" class="btn btn-ghost" type="button">Sync Tempo</button>
+        </div>
+        <div class="dj-crossfader-wrap">
+          <div class="dj-cross-labels"><span>Deck A</span><span>Crossfader</span><span>Deck B</span></div>
+          <input id="crossfader" class="range spotify-range dj-crossfader" type="range" min="0" max="100" value="50" />
+        </div>
+        <div class="dj-mixer-levels">
+          <div class="dj-level">
+            <span>A</span>
+            <div class="dj-level-meter"><i id="deckALevel"></i></div>
+          </div>
+          <div class="dj-level dj-level-master">
+            <span>Master</span>
+            <div class="dj-level-meter"><i id="masterLevel"></i></div>
+          </div>
+          <div class="dj-level">
+            <span>B</span>
+            <div class="dj-level-meter"><i id="deckBLevel"></i></div>
+          </div>
+        </div>
+        <label class="dj-slider-card dj-master-card">
+          <span>Master Volume</span>
+          <input id="masterVolume" class="range spotify-range" type="range" min="0" max="1" step="0.01" value="1" />
+        </label>
+        <div class="dj-mixer-actions">
+          <button id="queueToDeckABtn" class="control-icon-btn" type="button">Load Queue Top to A</button>
+          <button id="queueToDeckBBtn" class="control-icon-btn" type="button">Load Queue Top to B</button>
+        </div>
+      </section>
+
+      <article class="dj-deck card glass" data-deck="B">
+        <div class="dj-deck-head">
+          <span class="dj-deck-label">Deck B</span>
+          <span id="deckBCategory" class="player-chip">No track</span>
+        </div>
+        <div class="dj-deck-screen">
+          <img id="deckBCover" class="dj-deck-cover" src="/assets/logo.jpg" alt="Deck B cover" />
+          <div class="dj-deck-wave"></div>
+        </div>
+        <div class="dj-track-copy">
+          <h2 id="deckBTitle">Load a song to Deck B</h2>
+          <p id="deckBArtist" class="muted">Mix a second track when you're ready.</p>
+        </div>
+        <div class="dj-meta-row">
+          <span id="deckBTime" class="dj-time-readout">0:00 / 0:00</span>
+          <span id="deckBRateLabel" class="dj-rate-readout">Tempo 100%</span>
+        </div>
+        <input id="deckBSeek" class="range spotify-range dj-seek" type="range" min="0" max="100" value="0" />
+        <div class="dj-button-row">
+          <button id="deckBPlay" class="play-main-btn" type="button">Play</button>
+          <button id="deckBCue" class="control-icon-btn" type="button">Cue</button>
+          <a id="deckBDownload" class="btn btn-ghost download-btn dj-download-btn" href="#">Download</a>
+        </div>
+        <div class="dj-slider-grid">
+          <label class="dj-slider-card">
+            <span>Volume</span>
+            <input id="deckBVolume" class="range spotify-range" type="range" min="0" max="1" step="0.01" value="1" />
+          </label>
+          <label class="dj-slider-card">
+            <span>Tempo</span>
+            <input id="deckBRate" class="range spotify-range" type="range" min="0.75" max="1.25" step="0.01" value="1" />
+          </label>
+        </div>
+      </article>
+    </section>
+
+    <section class="dj-secondary-grid">
+      <aside class="dj-queue-card card glass">
+        <div class="queue-head dj-queue-head">
+          <div>
+            <h3>Queue</h3>
+            <p class="muted">Starts empty. Add tracks from the library below.</p>
+          </div>
+          <div class="dj-queue-actions">
             <span id="queueCountBadge" class="player-chip">0 songs</span>
+            <button id="clearQueueBtn" class="btn btn-ghost" type="button">Clear</button>
           </div>
-          <div id="queueList" class="queue-list spotify-queue-list"></div>
-        </aside>
-      </div>
+        </div>
+        <div id="queueList" class="queue-list spotify-queue-list dj-queue-list"></div>
+      </aside>
+
+      <section class="dj-tips card glass">
+        <span class="player-badge">BASIC DJ CONTROLS</span>
+        <h3>What you can do</h3>
+        <ul class="dj-tip-list">
+          <li>Load any uploaded song into Deck A or Deck B</li>
+          <li>Play, pause, cue back to start, and scrub through each deck</li>
+          <li>Change deck volume and tempo independently</li>
+          <li>Use the crossfader and master volume to blend both decks</li>
+          <li>Build the queue manually and load the top queued song into either deck</li>
+        </ul>
+      </section>
     </section>
 
     <section class="section player-recent-section">
       <div class="xodi-section-head player-recent-head">
         <div>
-          <span class="player-badge">RECENTLY UPLOADED</span>
-          <h3 class="section-title">Fresh Remix Drops</h3>
+          <span class="player-badge">SONG LIBRARY</span>
+          <h3 class="section-title">Recently Uploaded Songs</h3>
         </div>
-        <p class="muted">Newest uploads from the community, ready to open or play instantly.</p>
+        <p class="muted">Load directly into a deck or add to queue. The library stays newest first.</p>
       </div>
-      <div id="playerRecentGrid" class="song-grid player-recent-grid"></div>
+      <div id="playerRecentGrid" class="song-grid player-recent-grid dj-library-grid"></div>
     </section>
 
-    <audio id="audioPlayer" preload="metadata" crossorigin="anonymous"></audio>
+    <audio id="deckAAudio" preload="metadata" crossorigin="anonymous"></audio>
+    <audio id="deckBAudio" preload="metadata" crossorigin="anonymous"></audio>
   </main>
 
   <footer class="site-footer">
@@ -131,4 +209,3 @@
   <script src="/js/player.js"></script>
 </body>
 </html>
-
