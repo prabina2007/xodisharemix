@@ -4653,3 +4653,222 @@ textarea.input {
     font-size: 1.85rem;
   }
 }
+
+/* professional-scale-pass */
+html {
+  font-size: 18px;
+}
+
+body {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.container {
+  width: min(1320px, 95vw);
+}
+
+.navbar {
+  min-height: 84px;
+}
+
+.brand span {
+  font-size: 1.2rem;
+}
+
+.nav-actions .btn,
+.btn,
+.control-icon-btn,
+.play-main-btn,
+.download-btn,
+.admin-soft-btn,
+.admin-logout-btn {
+  font-size: 1rem;
+  min-height: 48px;
+  padding: 12px 20px;
+}
+
+.input,
+select.input,
+textarea.input,
+.search-wrap .input,
+.admin-toolbar-actions .input {
+  font-size: 1rem;
+  min-height: 50px;
+}
+
+.section-title {
+  font-size: clamp(1.75rem, 2.8vw, 2.45rem);
+}
+
+.song-body h4,
+.player-recent-grid .song-body h4,
+.dashboard-recent-item h4,
+.search-result-copy strong,
+.queue-item strong,
+.dj-queue-copy strong {
+  font-size: 1.15rem;
+  line-height: 1.35;
+}
+
+.song-meta,
+.song-card-footer,
+.player-recent-grid .song-meta,
+.player-recent-grid .song-open-hint,
+.player-recent-grid .song-card-footer,
+.dashboard-recent-item p,
+.queue-item small,
+.dj-queue-copy small,
+.now-artist,
+.player-recent-head p,
+.queue-head p,
+.xodi-hero-copy p,
+.xodi-hero-copy .xodi-sub {
+  font-size: 1rem;
+}
+
+.now-title,
+.dj-track-copy h2,
+.admin-hero-card h1,
+.upload-head h2,
+.dashboard-side-head h3 {
+  font-size: clamp(2rem, 3.4vw, 2.9rem);
+}
+
+.song-card,
+.card,
+.queue-item,
+.dashboard-recent-item {
+  border-radius: 18px;
+}
+
+@media (max-width: 900px) {
+  html {
+    font-size: 18px;
+  }
+
+  .container {
+    width: min(100%, 95vw);
+  }
+
+  .xodi-hero-copy h1 {
+    font-size: clamp(3.4rem, 10.6vw, 5.2rem);
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .nav-actions .btn,
+  .btn,
+  .control-icon-btn,
+  .play-main-btn,
+  .download-btn,
+  .admin-soft-btn,
+  .admin-logout-btn {
+    min-height: 50px;
+    font-size: 0.98rem;
+    padding: 12px 18px;
+  }
+
+  .song-body h4,
+  .player-recent-grid .song-body h4,
+  .dashboard-recent-item h4,
+  .queue-item strong,
+  .dj-queue-copy strong {
+    font-size: 1.08rem;
+  }
+
+  .song-meta,
+  .song-card-footer,
+  .player-recent-grid .song-meta,
+  .player-recent-grid .song-open-hint,
+  .player-recent-grid .song-card-footer,
+  .dashboard-recent-item p,
+  .queue-item small,
+  .dj-queue-copy small,
+  .now-artist,
+  .queue-head p,
+  .player-recent-head p {
+    font-size: 0.98rem;
+  }
+}
+
+@media (max-width: 560px) {
+  html {
+    font-size: 19px;
+  }
+
+  body {
+    line-height: 1.62;
+  }
+
+  .container {
+    width: min(100%, 94vw);
+  }
+
+  .xodi-hero-copy h1 {
+    font-size: clamp(3.6rem, 13.5vw, 5.4rem);
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .nav-actions .btn,
+  .btn,
+  .control-icon-btn,
+  .play-main-btn,
+  .download-btn,
+  .admin-soft-btn,
+  .admin-logout-btn,
+  .hero-actions .btn,
+  .xodi-actions .btn,
+  .admin-toolbar-actions .btn {
+    min-height: 52px;
+    font-size: 1rem;
+    padding: 12px 16px;
+  }
+
+  .input,
+  select.input,
+  textarea.input,
+  .search-wrap .input,
+  .admin-toolbar-actions .input {
+    min-height: 52px;
+    font-size: 1rem;
+  }
+
+  .song-body h4,
+  .player-recent-grid .song-body h4,
+  .dashboard-recent-item h4,
+  .queue-item strong,
+  .dj-queue-copy strong {
+    font-size: 1.12rem;
+    line-height: 1.34;
+  }
+
+  .song-meta,
+  .song-card-footer,
+  .player-recent-grid .song-meta,
+  .player-recent-grid .song-open-hint,
+  .player-recent-grid .song-card-footer,
+  .dashboard-recent-item p,
+  .queue-item small,
+  .dj-queue-copy small,
+  .now-artist,
+  .queue-head p,
+  .player-recent-head p,
+  .xodi-hero-copy p,
+  .xodi-hero-copy .xodi-sub {
+    font-size: 1rem;
+  }
+
+  .now-title,
+  .dj-track-copy h2,
+  .admin-hero-card h1,
+  .upload-head h2,
+  .dashboard-side-head h3 {
+    font-size: 2rem;
+  }
+}
