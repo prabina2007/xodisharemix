@@ -1,49 +1,38 @@
+let queue = [];
+let currentIndex = 0;
+let audio;
+let switchToken = 0;
+let currentVolume = 1;
+let eqContext;
+let eqNodesReady = false;
+let bassFilter;
+let midFilter;
+let trebleFilter;
+let analyser;
+let visualizerFrame;
+const eqState = { bass: 0, mid: 0, treble: 0 };
+
 const params = new URLSearchParams(window.location.search);
-const initialSongId = params.get('id');
+const songId = params.get('id');
+const TRANSITION_MS = 260;
 
-const librarySongs = [];
-const queue = [];
-let masterVolume = 1;
-let crossfaderValue = 0.5;
-let audioContext;
-let mixerReady = false;
-let masterGain;
-let meterFrame;
-let crossfadeBusy = false;
-let transitionFrame;
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const getSongBaseBpm = (song) => {
-  const value = Number(song?.bpm);
-  return Number.isFinite(value) && value > 0 ? value : 120;
+const fadeTo = async (target, duration) => {
+  const start = Number.isFinite(audio.volume) ? audio.volume : 1;
+  const steps = 10;
+  const stepDuration = Math.max(12, Math.floor(duration / steps));
+
+  for (let i = 1; i <= steps; i += 1) {
+    const value = start + ((target - start) * i) / steps;
+    audio.volume = Math.min(1, Math.max(0, value));
+    await wait(stepDuration);
+  }
 };
 
-const deckState = {
-  A: {
-    key: 'A',
-    song: null,
-    audio: null,
-    source: null,
-    gainNode: null,
-    analyser: null,
-    volume: 1,
-    rate: 1,
-    baseBpm: 120,
-    currentBpm: 120,
-    elements: {},
-  },
-  B: {
-    key: 'B',
-    song: null,
-    audio: null,
-    source: null,
-    gainNode: null,
-    analyser: null,
-    volume: 1,
-    rate: 1,
-    baseBpm: 120,
-    currentBpm: 120,
-    elements: {},
-  },
+const formatDownloadName = (song) => {
+  if (!song) return '';
+  return `${song.title} - ${song.artist} - xodisharemix`;
 };
 
 const formatTime = (seconds) => {
@@ -53,469 +42,459 @@ const formatTime = (seconds) => {
   return `${mins}:${String(secs).padStart(2, '0')}`;
 };
 
-const deckMixWeight = (deckKey) => (deckKey === 'A' ? 1 - crossfaderValue : crossfaderValue);
-
-const formatDownloadName = (song) => {
-  if (!song) return '';
-  return `${song.title} - ${song.artist} - xodisharemix`;
-};
-
-const setDeckButtonLabel = (deck) => {
-  if (!deck.elements.playBtn || !deck.audio) return;
-  deck.elements.playBtn.textContent = deck.audio.paused ? 'Play' : 'Pause';
-};
-
-const setMasterPlayPauseLabel = () => {
-  const btn = document.getElementById('masterPlayPauseBtn');
-  if (!btn) return;
-  const playableDecks = ['A', 'B'].map((key) => deckState[key]).filter((deck) => deck.song);
-  if (!playableDecks.length) {
-    btn.textContent = 'Master Play';
+const saveMiniResumeStateAndGoHome = () => {
+  if (!queue.length || !queue[currentIndex]) {
+    window.location.href = '/index.html';
     return;
   }
-  btn.textContent = playableDecks.some((deck) => !deck.audio.paused) ? 'Master Pause' : 'Master Play';
-};
 
-const updateQueueBadge = () => {
-  const badge = document.getElementById('queueCountBadge');
-  if (badge) badge.textContent = `${queue.length} song${queue.length === 1 ? '' : 's'}`;
-};
-
-const updateDeckReadout = (deck) => {
-  const { song, elements, audio } = deck;
-  elements.cover.src = resolveMediaUrl(song?.imagePath || '/assets/logo.jpg');
-  elements.title.textContent = song?.title || `Load a song to Deck ${deck.key}`;
-  elements.artist.textContent = song?.artist || (deck.key === 'A'
-    ? 'Choose any recent upload below.'
-    : 'Mix a second track when you are ready.');
-  elements.category.textContent = song ? categoryLabel(song.category) : 'No track';
-  elements.download.href = song ? `${API_BASE}/api/songs/${song._id}/download` : '#';
-  elements.download.setAttribute('download', formatDownloadName(song));
-  elements.time.textContent = `${formatTime(audio?.currentTime || 0)} / ${formatTime(audio?.duration || 0)}`;
-  elements.bpmLabel.textContent = `BPM ${Math.round(deck.currentBpm)}`;
-  elements.seek.value = audio?.duration ? String((audio.currentTime / audio.duration) * 100) : '0';
-  elements.volume.value = String(deck.volume);
-  elements.bpm.value = String(Math.round(deck.currentBpm));
-  setDeckButtonLabel(deck);
-  setMasterPlayPauseLabel();
-};
-
-const updateMixerGains = () => {
-  if (!mixerReady) return;
-  ['A', 'B'].forEach((key) => {
-    const deck = deckState[key];
-    if (!deck.gainNode) return;
-    deck.gainNode.gain.value = deck.volume * deckMixWeight(key) * masterVolume;
-  });
-};
-
-const setDeckVolumes = (aVolume = 1, bVolume = 1) => {
-  if (deckState.A.audio) deckState.A.audio.volume = Math.max(0, Math.min(1, aVolume));
-  if (deckState.B.audio) deckState.B.audio.volume = Math.max(0, Math.min(1, bVolume));
-};
-
-const setCrossfaderUi = (value) => {
-  crossfaderValue = Math.max(0, Math.min(1, value));
-  const control = document.getElementById('crossfader');
-  if (control) control.value = String(Math.round(crossfaderValue * 100));
-  updateMixerGains();
-};
-
-const animateCrossfaderTo = (target, duration = 900) => new Promise((resolve) => {
-  const start = crossfaderValue;
-  const startedAt = performance.now();
-  const frame = (time) => {
-    const progress = Math.min(1, (time - startedAt) / duration);
-    const eased = 1 - ((1 - progress) ** 3);
-    setCrossfaderUi(start + ((target - start) * eased));
-    if (progress < 1) requestAnimationFrame(frame);
-    else resolve();
-  };
-  requestAnimationFrame(frame);
-});
-
-const animateDeckTransition = (fromKey, toKey, duration = 950) => new Promise((resolve) => {
-  const startCross = crossfaderValue;
-  const targetCross = toKey === 'A' ? 0 : 1;
-  const startedAt = performance.now();
-
-  if (transitionFrame) cancelAnimationFrame(transitionFrame);
-
-  const frame = (time) => {
-    const progress = Math.min(1, (time - startedAt) / duration);
-    const eased = 1 - ((1 - progress) ** 3);
-    const currentCross = startCross + ((targetCross - startCross) * eased);
-    const fadeOut = Math.max(0.02, 1 - eased);
-    const fadeIn = Math.min(1, 0.14 + (eased * 0.86));
-
-    setCrossfaderUi(currentCross);
-    setDeckVolumes(
-      fromKey === 'A' ? fadeOut : fadeIn,
-      fromKey === 'B' ? fadeOut : fadeIn,
-    );
-
-    if (progress < 1) {
-      transitionFrame = requestAnimationFrame(frame);
-      return;
-    }
-
-    transitionFrame = null;
-    resolve();
+  const song = queue[currentIndex];
+  const payload = {
+    songId: song._id,
+    currentTime: Number.isFinite(audio.currentTime) ? audio.currentTime : 0,
+    wasPlaying: !audio.paused,
+    volume: Number.isFinite(audio.volume) ? audio.volume : 1,
+    savedAt: Date.now(),
   };
 
-  transitionFrame = requestAnimationFrame(frame);
-});
-const initMixer = () => {
-  if (mixerReady || !window.AudioContext) return;
-  audioContext = new window.AudioContext();
-  masterGain = audioContext.createGain();
-  masterGain.connect(audioContext.destination);
-
-  ['A', 'B'].forEach((key) => {
-    const deck = deckState[key];
-    deck.source = audioContext.createMediaElementSource(deck.audio);
-    deck.gainNode = audioContext.createGain();
-    deck.analyser = audioContext.createAnalyser();
-    deck.analyser.fftSize = 128;
-    deck.source.connect(deck.gainNode);
-    deck.gainNode.connect(deck.analyser);
-    deck.analyser.connect(masterGain);
-  });
-
-  mixerReady = true;
-  updateMixerGains();
-  startMixerMeters();
+  localStorage.setItem('xodiMiniResume', JSON.stringify(payload));
+  window.location.href = '/index.html';
 };
 
-const ensureMixerResumed = async () => {
-  initMixer();
-  if (audioContext && audioContext.state === 'suspended') {
-    try { await audioContext.resume(); } catch (_error) {}
-  }
+const setPlayPauseLabel = () => {
+  const btn = document.getElementById('playPauseBtn');
+  if (!btn || !audio) return;
+  btn.textContent = audio.paused ? 'Play' : 'Pause';
 };
 
-const startMixerMeters = () => {
-  if (!mixerReady) return;
-  const levelEls = {
-    A: document.getElementById('deckALevel'),
-    B: document.getElementById('deckBLevel'),
-    M: document.getElementById('masterLevel'),
-  };
-  const dataA = new Uint8Array(deckState.A.analyser.frequencyBinCount);
-  const dataB = new Uint8Array(deckState.B.analyser.frequencyBinCount);
-  const isMobile = () => window.matchMedia('(max-width: 780px)').matches;
-  const setMeter = (el, amount) => {
-    if (!el) return;
-    if (isMobile()) {
-      el.style.width = `${Math.max(8, amount * 100)}%`;
-      el.style.height = '100%';
-    } else {
-      el.style.height = `${Math.max(8, amount * 100)}%`;
-      el.style.width = '100%';
-    }
-  };
-
-  const draw = () => {
-    deckState.A.analyser.getByteFrequencyData(dataA);
-    deckState.B.analyser.getByteFrequencyData(dataB);
-    const avgA = dataA.reduce((sum, value) => sum + value, 0) / dataA.length / 255;
-    const avgB = dataB.reduce((sum, value) => sum + value, 0) / dataB.length / 255;
-    setMeter(levelEls.A, avgA);
-    setMeter(levelEls.B, avgB);
-    setMeter(levelEls.M, (avgA + avgB) / 2);
-    meterFrame = requestAnimationFrame(draw);
-  };
-
-  if (meterFrame) cancelAnimationFrame(meterFrame);
-  draw();
-};
-
-const loadDeck = async (deckKey, song, autoplay = false) => {
-  const deck = deckState[deckKey];
-  if (!deck || !song) return;
-
-  deck.song = song;
-  deck.baseBpm = getSongBaseBpm(song);
-  deck.currentBpm = deck.baseBpm;
-  deck.rate = 1;
-  deck.audio.pause();
-  deck.audio.src = resolveMediaUrl(song.songPath);
-  deck.audio.currentTime = 0;
-  deck.audio.volume = 1;
-  deck.audio.playbackRate = deck.rate;
-  updateDeckReadout(deck);
-  updateMixerGains();
-
-  if (autoplay) {
-    await ensureMixerResumed();
-    try { await deck.audio.play(); } catch (_error) {}
-    setDeckButtonLabel(deck);
-    setMasterPlayPauseLabel();
-  }
-};
-
-const toggleDeckPlayback = async (deckKey) => {
-  const deck = deckState[deckKey];
-  if (!deck.song) return;
-  await ensureMixerResumed();
-  if (deck.audio.paused) {
-    try { await deck.audio.play(); } catch (_error) {}
-  } else {
-    deck.audio.pause();
-  }
-  setDeckButtonLabel(deck);
-  setMasterPlayPauseLabel();
-};
-
-const cueDeck = (deckKey) => {
-  const deck = deckState[deckKey];
-  if (!deck.song) return;
-  deck.audio.pause();
-  deck.audio.currentTime = 0;
-  updateDeckReadout(deck);
-};
-
-const toggleMasterPlayback = async () => {
-  const playableDecks = ['A', 'B'].map((key) => deckState[key]).filter((deck) => deck.song);
-  if (!playableDecks.length) return;
-  await ensureMixerResumed();
-  const anyPlaying = playableDecks.some((deck) => !deck.audio.paused);
-
-  if (anyPlaying) {
-    playableDecks.forEach((deck) => deck.audio.pause());
-  } else {
-    await Promise.all(playableDecks.map(async (deck) => {
-      try { await deck.audio.play(); } catch (_error) {}
-    }));
-  }
-
-  playableDecks.forEach(updateDeckReadout);
-  setMasterPlayPauseLabel();
-};
-
-const smoothSwitchDeck = async () => {
-  if (crossfadeBusy) return;
-  const fromKey = crossfaderValue <= 0.5 ? 'A' : 'B';
-  const toKey = fromKey === 'A' ? 'B' : 'A';
-  const fromDeck = deckState[fromKey];
-  const toDeck = deckState[toKey];
-  if (!toDeck.song) return;
-
-  crossfadeBusy = true;
-  await ensureMixerResumed();
-  if (toDeck.audio.paused) {
-    try { await toDeck.audio.play(); } catch (_error) {}
-  }
-  await animateDeckTransition(fromKey, toKey, 1050);
-  if (!fromDeck.audio.paused) fromDeck.audio.pause();
-  setCrossfaderUi(toKey === 'A' ? 0 : 1);
-  setDeckVolumes(1, 1);
-  updateDeckReadout(fromDeck);
-  updateDeckReadout(toDeck);
-  crossfadeBusy = false;
-};
-
-const addToQueue = (songId) => {
-  const song = librarySongs.find((item) => item._id === songId);
+const updatePlayerMeta = () => {
+  const song = queue[currentIndex];
   if (!song) return;
-  if (!queue.some((item) => item._id === songId)) queue.push(song);
-  renderQueue();
-};
 
-const removeFromQueue = (songId) => {
-  const idx = queue.findIndex((item) => item._id === songId);
-  if (idx >= 0) queue.splice(idx, 1);
-  renderQueue();
-};
+  const categoryBadge = document.getElementById('playerCategoryBadge');
+  const queueCountBadge = document.getElementById('queueCountBadge');
 
-const clearQueue = () => {
-  queue.length = 0;
-  renderQueue();
-};
-
-const loadQueueTopToDeck = async (deckKey) => {
-  if (!queue.length) return;
-  const song = queue.shift();
-  renderQueue();
-  await loadDeck(deckKey, song, false);
+  if (categoryBadge) categoryBadge.textContent = categoryLabel(song.category);
+  if (queueCountBadge) queueCountBadge.textContent = `${queue.length} songs`;
 };
 
 const renderQueue = () => {
   const root = document.getElementById('queueList');
-  if (!root) return;
-  updateQueueBadge();
-  if (!queue.length) {
-    root.innerHTML = '<div class="dj-empty-state"><strong>Queue is empty</strong><p class="muted">Add tracks from the song library below.</p></div>';
-    return;
-  }
-
-  root.innerHTML = queue.map((song, index) => `
-    <article class="queue-item dj-queue-item">
-      <img class="dj-queue-cover" src="${resolveMediaUrl(song.imagePath)}" alt="${song.title}" />
-      <div class="dj-queue-copy">
-        <strong>${index + 1}. ${song.title}</strong>
-        <small class="muted">${song.artist}</small>
-      </div>
-      <div class="dj-queue-item-actions">
-        <button class="btn btn-ghost dj-mini-btn" onclick="event.stopPropagation(); loadSongToDeck('A', '${song._id}')">A</button>
-        <button class="btn btn-ghost dj-mini-btn" onclick="event.stopPropagation(); loadSongToDeck('B', '${song._id}')">B</button>
-        <button class="btn btn-ghost dj-mini-btn" onclick="event.stopPropagation(); removeSongFromQueue('${song._id}')">Remove</button>
-      </div>
-    </article>
-  `).join('');
+  root.innerHTML = queue
+    .map((song, idx) => `<div class="queue-item ${idx === currentIndex ? 'active' : ''}" onclick="playIndex(${idx})"><strong>${idx + 1}. ${song.title}</strong><br/><small class="muted">${song.artist}</small></div>`)
+    .join('');
+  updatePlayerMeta();
 };
 
-const renderLibrary = () => {
+const renderRecentSongCards = () => {
   const root = document.getElementById('playerRecentGrid');
   if (!root) return;
-  if (!librarySongs.length) {
+
+  const recentSongs = [...queue];
+  if (!recentSongs.length) {
     root.innerHTML = '<p class="muted">No recent uploads yet.</p>';
     return;
   }
 
-  root.innerHTML = librarySongs.map((song) => `
-    <article class="song-card glass song-card-interactive player-recent-card dj-library-card">
-      <div class="cover-wrap">
-        <img class="song-cover" src="${resolveMediaUrl(song.imagePath)}" alt="${song.title}" />
-      </div>
-      <div class="song-body">
-        <h4>${song.title}</h4>
-        <p class="song-meta">${song.artist}</p>
-        <div class="song-card-footer dj-library-footer">
-          <small class="muted">${categoryLabel(song.category)}</small>
-          <span class="song-open-hint">Ready to mix</span>
+  root.innerHTML = recentSongs
+    .map((song) => `
+      <article class="song-card glass song-card-interactive player-recent-card" onclick="playSongById('${song._id}')">
+        <div class="cover-wrap">
+          <img class="song-cover" src="${resolveMediaUrl(song.imagePath)}" alt="${song.title}" />
+          <button class="btn btn-primary play-overlay-btn" onclick="event.stopPropagation(); playSongById('${song._id}')">Play</button>
         </div>
-        <div class="dj-library-actions">
-          <button class="btn btn-primary dj-library-btn" onclick="loadSongToDeck('A', '${song._id}')">A</button>
-          <button class="btn btn-ghost dj-library-btn" onclick="loadSongToDeck('B', '${song._id}')">B</button>
-          <button class="btn btn-ghost dj-library-btn" onclick="addSongToQueue('${song._id}')">Queue</button>
+        <div class="song-body">
+          <h4>${song.title}</h4>
+          <p class="song-meta">${song.artist}</p>
+          <div class="song-card-footer">
+            <small class="muted">${categoryLabel(song.category)}</small>
+            <span class="song-open-hint">Play now</span>
+          </div>
         </div>
-      </div>
-    </article>
-  `).join('');
+      </article>`)
+    .join('');
 };
 
-const syncDeckTempos = () => {
-  const referenceDeck = deckState.A.song ? deckState.A : deckState.B;
-  ['A', 'B'].forEach((key) => {
-    const deck = deckState[key];
-    if (!deck.song) return;
-    deck.currentBpm = referenceDeck.currentBpm;
-    deck.rate = deck.currentBpm / deck.baseBpm;
-    deck.audio.playbackRate = deck.rate;
-    updateDeckReadout(deck);
-  });
+const playSongById = async (id) => {
+  const idx = queue.findIndex((song) => song._id === id);
+  if (idx < 0) return;
+  await playIndex(idx, true);
+  const top = document.querySelector('.player-wrap');
+  if (top) top.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
-const bindDeckEvents = (deckKey) => {
-  const deck = deckState[deckKey];
-  const { audio, elements } = deck;
+window.playSongById = playSongById;
+const syncQueueCardHeight = () => {
+  const nowCard = document.querySelector('.now-playing-card');
+  const queueCard = document.querySelector('.queue-card');
+  if (!nowCard || !queueCard) return;
 
-  elements.playBtn.addEventListener('click', () => toggleDeckPlayback(deckKey));
-  elements.cueBtn.addEventListener('click', () => cueDeck(deckKey));
-  elements.seek.addEventListener('input', () => {
-    if (!audio.duration) return;
-    audio.currentTime = (Number(elements.seek.value) / 100) * audio.duration;
-    updateDeckReadout(deck);
-  });
-  elements.volume.addEventListener('input', () => {
-    deck.volume = Number(elements.volume.value);
-    updateMixerGains();
-  });
-  elements.bpm.addEventListener('input', () => {
-    deck.currentBpm = Number(elements.bpm.value);
-    deck.rate = deck.currentBpm / deck.baseBpm;
-    audio.playbackRate = deck.rate;
-    updateDeckReadout(deck);
-  });
+  if (window.matchMedia('(max-width: 900px)').matches) {
+    queueCard.style.height = '';
+    queueCard.style.minHeight = '';
+    queueCard.style.maxHeight = '';
+    return;
+  }
 
-  audio.addEventListener('loadedmetadata', () => updateDeckReadout(deck));
-  audio.addEventListener('timeupdate', () => updateDeckReadout(deck));
-  audio.addEventListener('play', () => {
-    setDeckButtonLabel(deck);
-    setMasterPlayPauseLabel();
-  });
-  audio.addEventListener('pause', () => {
-    setDeckButtonLabel(deck);
-    setMasterPlayPauseLabel();
-  });
-  audio.addEventListener('ended', () => {
-    setDeckButtonLabel(deck);
-    setMasterPlayPauseLabel();
-  });
+  const nowHeight = Math.ceil(nowCard.getBoundingClientRect().height);
+  const idealHeight = Math.max(420, Math.min(nowHeight, 560));
+  queueCard.style.height = `${idealHeight}px`;
+  queueCard.style.minHeight = `${idealHeight}px`;
+  queueCard.style.maxHeight = `${idealHeight}px`;
 };
 
-window.loadSongToDeck = async (deckKey, songId) => {
-  const song = librarySongs.find((item) => item._id === songId) || queue.find((item) => item._id === songId);
-  if (!song) return;
-  await loadDeck(deckKey, song, false);
+const createVisualizerBars = (rootId, count = 34) => {
+  const root = document.getElementById(rootId);
+  if (!root) return [];
+  root.innerHTML = Array.from({ length: count }, () => '<span class="eq-bar"></span>').join('');
+  return Array.from(root.querySelectorAll('.eq-bar'));
 };
-window.addSongToQueue = addToQueue;
-window.removeSongFromQueue = removeFromQueue;
+
+const startVisualizer = () => {
+  if (!analyser) return;
+  const mainBars = createVisualizerBars('eqVisualizer');
+  const queueBars = createVisualizerBars('queueEqVisualizer');
+  const barSets = [mainBars, queueBars].filter((set) => set.length > 0);
+  if (!barSets.length) return;
+  const barCount = barSets[0].length;
+
+  const data = new Uint8Array(analyser.frequencyBinCount);
+  const heights = new Array(barCount).fill(1);
+  const smoothBins = new Array(barCount).fill(0);
+  const bassHistory = [];
+  let prevBass = 0;
+  let beatPulse = 0;
+  let beatCooldown = 0;
+  let globalLevel = 0;
+
+  const draw = () => {
+    if (audio.paused) {
+      heights.forEach((_, i) => {
+        heights[i] += (1 - heights[i]) * 0.45;
+        barSets.forEach((bars) => {
+          bars[i].style.height = `${Math.max(1, heights[i]).toFixed(2)}%`;
+          bars[i].style.opacity = '0.3';
+        });
+      });
+      visualizerFrame = requestAnimationFrame(draw);
+      return;
+    }
+
+    analyser.getByteFrequencyData(data);
+
+    const bassBins = Math.max(3, Math.floor(data.length * 0.1));
+    let bassSum = 0;
+    for (let i = 0; i < bassBins; i += 1) {
+      const weight = 1.45 - (i / bassBins) * 0.55;
+      bassSum += data[i] * weight;
+    }
+    const bassEnergy = (bassSum / bassBins) / 255;
+    let totalEnergy = 0;
+    for (let i = 0; i < data.length; i += 1) totalEnergy += data[i];
+    const overallEnergy = (totalEnergy / data.length) / 255;
+    globalLevel = globalLevel * 0.86 + overallEnergy * 0.14;
+
+    bassHistory.push(bassEnergy);
+    if (bassHistory.length > 42) bassHistory.shift();
+    const bassAvg = bassHistory.reduce((acc, val) => acc + val, 0) / (bassHistory.length || 1);
+    const bassDelta = bassEnergy - prevBass;
+    prevBass = prevBass * 0.78 + bassEnergy * 0.22;
+
+    const beatDetected = beatCooldown <= 0
+      && bassEnergy > bassAvg * 1.22
+      && bassDelta > 0.016;
+
+    if (beatDetected) {
+      beatPulse = Math.min(1, beatPulse + (bassEnergy - bassAvg) * 2.8 + 0.2);
+      beatCooldown = 8;
+    } else {
+      beatPulse *= 0.88;
+      beatCooldown = Math.max(0, beatCooldown - 1);
+    }
+
+    const quietFrame = globalLevel < 0.06;
+    const globalGate = quietFrame ? 0.14 : Math.min(1, 0.28 + globalLevel * 1.35 + beatPulse * 0.42);
+
+    heights.forEach((_, i) => {
+      const start = Math.floor(((i / barCount) ** 2.05) * data.length * 0.96);
+      const end = Math.max(start + 1, Math.floor((((i + 1) / barCount) ** 2.05) * data.length * 0.96));
+      let sum = 0;
+      for (let j = start; j < end; j += 1) sum += data[j];
+      const avg = sum / (end - start || 1);
+      const energy = avg / 255;
+      smoothBins[i] = smoothBins[i] * 0.74 + energy * 0.26;
+
+      const bassWeight = Math.pow(1 - (i / barCount), 1.35);
+      const shapedEnergy = Math.pow(smoothBins[i], 1.28);
+      const target = Math.min(
+        100,
+        Math.max(
+          1,
+          1 + (shapedEnergy * 78 + bassEnergy * 26 * bassWeight + beatPulse * 24 * bassWeight) * globalGate,
+        ),
+      );
+
+      const attack = 0.63;
+      const release = quietFrame ? 0.48 : 0.26;
+      const smoothing = target > heights[i] ? attack : release;
+      heights[i] += (target - heights[i]) * smoothing;
+      const barHeight = `${heights[i].toFixed(2)}%`;
+      const barOpacity = `${Math.min(1, 0.34 + heights[i] / 120)}`;
+      barSets.forEach((bars) => {
+        bars[i].style.height = barHeight;
+        bars[i].style.opacity = barOpacity;
+      });
+    });
+
+    visualizerFrame = requestAnimationFrame(draw);
+  };
+
+  if (visualizerFrame) cancelAnimationFrame(visualizerFrame);
+  draw();
+};
+
+const initEqualizer = () => {
+  if (eqNodesReady || !audio || !window.AudioContext) return;
+
+  eqContext = new window.AudioContext();
+  const source = eqContext.createMediaElementSource(audio);
+
+  bassFilter = eqContext.createBiquadFilter();
+  bassFilter.type = 'lowshelf';
+  bassFilter.frequency.value = 200;
+  bassFilter.gain.value = 0;
+
+  midFilter = eqContext.createBiquadFilter();
+  midFilter.type = 'peaking';
+  midFilter.frequency.value = 1000;
+  midFilter.Q.value = 1;
+  midFilter.gain.value = 0;
+
+  trebleFilter = eqContext.createBiquadFilter();
+  trebleFilter.type = 'highshelf';
+  trebleFilter.frequency.value = 3200;
+  trebleFilter.gain.value = eqState.treble;
+
+  analyser = eqContext.createAnalyser();
+  analyser.fftSize = 1024;
+  analyser.smoothingTimeConstant = 0.55;
+
+  source.connect(bassFilter);
+  bassFilter.connect(midFilter);
+  midFilter.connect(trebleFilter);
+  trebleFilter.connect(analyser);
+  analyser.connect(eqContext.destination);
+
+  bassFilter.gain.value = eqState.bass;
+  midFilter.gain.value = eqState.mid;
+  trebleFilter.gain.value = eqState.treble;
+
+  eqNodesReady = true;
+  startVisualizer();
+};
+
+const syncEqualizerUI = () => {
+  const controlSets = [
+    {
+      bass: document.getElementById('bassEq'),
+      mid: document.getElementById('midEq'),
+      treble: document.getElementById('trebleEq'),
+      reset: document.getElementById('resetEqBtn'),
+    },
+    {
+      bass: document.getElementById('bassEqQueue'),
+      mid: document.getElementById('midEqQueue'),
+      treble: document.getElementById('trebleEqQueue'),
+      reset: document.getElementById('resetEqBtnQueue'),
+    },
+  ].filter((set) => set.bass && set.mid && set.treble && set.reset);
+
+  if (!controlSets.length) return;
+
+  const applyStateToFilters = () => {
+    if (bassFilter) bassFilter.gain.value = eqState.bass;
+    if (midFilter) midFilter.gain.value = eqState.mid;
+    if (trebleFilter) trebleFilter.gain.value = eqState.treble;
+  };
+
+  const syncInputsFromState = () => {
+    controlSets.forEach((set) => {
+      set.bass.value = String(eqState.bass);
+      set.mid.value = String(eqState.mid);
+      set.treble.value = String(eqState.treble);
+    });
+  };
+
+  const applyFromSet = (set) => {
+    eqState.bass = Number(set.bass.value);
+    eqState.mid = Number(set.mid.value);
+    eqState.treble = Number(set.treble.value);
+    syncInputsFromState();
+    applyStateToFilters();
+  };
+
+  controlSets.forEach((set) => {
+    set.bass.addEventListener('input', () => applyFromSet(set));
+    set.mid.addEventListener('input', () => applyFromSet(set));
+    set.treble.addEventListener('input', () => applyFromSet(set));
+    set.reset.addEventListener('click', () => {
+      eqState.bass = 0;
+      eqState.mid = 0;
+      eqState.treble = 0;
+      syncInputsFromState();
+      applyStateToFilters();
+    });
+  });
+
+  syncInputsFromState();
+  applyStateToFilters();
+};
+
+const loadSong = async (song, forcePlay = true) => {
+  const token = ++switchToken;
+  document.getElementById('songCover').src = resolveMediaUrl(song.imagePath || '/assets/logo.jpg');
+  document.getElementById('songTitle').textContent = song.title;
+  document.getElementById('songArtist').textContent = song.artist;
+  document.getElementById('downloadBtn').href = `${API_BASE}/api/songs/${song._id}/download`;
+  document.getElementById('downloadBtn').setAttribute('download', formatDownloadName(song));
+  const djBtn = document.getElementById('openDjBtn');
+  if (djBtn) djBtn.href = `/dj.html?id=${song._id}`;
+
+  document.getElementById('currentTime').textContent = '0:00';
+  document.getElementById('totalTime').textContent = '0:00';
+
+  if (!audio.paused && audio.src) {
+    await fadeTo(0, TRANSITION_MS);
+    if (token !== switchToken) return;
+    audio.pause();
+  }
+
+  audio.src = resolveMediaUrl(song.songPath);
+  audio.currentTime = 0;
+  audio.volume = 0;
+
+  if (forcePlay) {
+    try {
+      await audio.play();
+    } catch (_error) {
+      audio.volume = currentVolume;
+    }
+    if (token !== switchToken) return;
+    await fadeTo(currentVolume, TRANSITION_MS);
+  } else {
+    audio.volume = currentVolume;
+  }
+
+  setPlayPauseLabel();
+  renderQueue();
+  renderRecentSongCards();
+  syncQueueCardHeight();
+};
+
+const playIndex = async (idx, forcePlay = true) => {
+  currentIndex = idx;
+  await loadSong(queue[currentIndex], forcePlay);
+};
+
+window.playIndex = playIndex;
 
 window.addEventListener('DOMContentLoaded', async () => {
-  showLoader(true);
+  audio = document.getElementById('audioPlayer');
+  audio.crossOrigin = 'anonymous';
+  syncEqualizerUI();
+  initEqualizer();
 
-  deckState.A.audio = document.getElementById('deckAAudio');
-  deckState.B.audio = document.getElementById('deckBAudio');
+  const allRes = await fetch(`${API_BASE}/api/songs`);
+  const allData = await allRes.json();
+  queue = (allData.songs || []).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
-  ['A', 'B'].forEach((key) => {
-    deckState[key].elements = {
-      cover: document.getElementById(`deck${key}Cover`),
-      title: document.getElementById(`deck${key}Title`),
-      artist: document.getElementById(`deck${key}Artist`),
-      category: document.getElementById(`deck${key}Category`),
-      time: document.getElementById(`deck${key}Time`),
-      bpmLabel: document.getElementById(`deck${key}BpmLabel`),
-      seek: document.getElementById(`deck${key}Seek`),
-      volume: document.getElementById(`deck${key}Volume`),
-      bpm: document.getElementById(`deck${key}Bpm`),
-      playBtn: document.getElementById(`deck${key}Play`),
-      cueBtn: document.getElementById(`deck${key}Cue`),
-      download: document.getElementById(`deck${key}Download`),
-    };
-    bindDeckEvents(key);
-    updateDeckReadout(deckState[key]);
-  });
+  if (!queue.length) return;
 
-  document.getElementById('crossfader').addEventListener('input', (event) => {
-    setCrossfaderUi(Number(event.target.value) / 100);
-  });
-  document.getElementById('masterVolume').addEventListener('input', (event) => {
-    masterVolume = Number(event.target.value);
-    updateMixerGains();
-  });
-  document.getElementById('syncDecksBtn').addEventListener('click', syncDeckTempos);
-  document.getElementById('masterPlayPauseBtn').addEventListener('click', toggleMasterPlayback);
-  document.getElementById('clearQueueBtn').addEventListener('click', clearQueue);
-  document.getElementById('queueToDeckABtn').addEventListener('click', () => loadQueueTopToDeck('A'));
-  document.getElementById('queueToDeckBBtn').addEventListener('click', () => loadQueueTopToDeck('B'));
-
-  try {
-    const res = await fetch(`${API_BASE}/api/songs`);
-    const data = await res.json();
-    librarySongs.push(...((data.songs || []).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))));
-    renderLibrary();
-    renderQueue();
-    setCrossfaderUi(0.5);
-    setMasterPlayPauseLabel();
-
-    if (initialSongId) {
-      const firstSong = librarySongs.find((song) => song._id === initialSongId);
-      if (firstSong) await loadDeck('A', firstSong, false);
-    }
-  } catch (error) {
-    console.error(error);
-  } finally {
-    showLoader(false);
+  if (songId) {
+    const found = queue.findIndex((s) => s._id === songId);
+    currentIndex = found >= 0 ? found : 0;
   }
-});
+  await loadSong(queue[currentIndex], false);
 
-window.addEventListener('keydown', async (event) => {
-  if (event.code !== 'Space') return;
-  const tag = document.activeElement?.tagName;
-  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'BUTTON' || document.activeElement?.isContentEditable) return;
-  event.preventDefault();
-  await smoothSwitchDeck();
+  const playPauseBtn = document.getElementById('playPauseBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const openMiniBtn = document.getElementById('openMiniBtn');
+  const progress = document.getElementById('progressBar');
+  const volume = document.getElementById('volumeBar');
+  const currentTime = document.getElementById('currentTime');
+  const totalTime = document.getElementById('totalTime');
+
+  playPauseBtn.addEventListener('click', async () => {
+    initEqualizer();
+    if (eqContext && eqContext.state === 'suspended') {
+      try { await eqContext.resume(); } catch (_error) {}
+    }
+    if (audio.paused) {
+      try {
+        await audio.play();
+      } catch (_error) {}
+    } else {
+      audio.pause();
+    }
+    setPlayPauseLabel();
+  });
+  nextBtn.addEventListener('click', () => {
+    playIndex((currentIndex + 1) % queue.length, true);
+  });
+  prevBtn.addEventListener('click', () => {
+    playIndex((currentIndex - 1 + queue.length) % queue.length, true);
+  });
+  openMiniBtn.addEventListener('click', saveMiniResumeStateAndGoHome);
+
+  audio.addEventListener('loadedmetadata', () => {
+    totalTime.textContent = formatTime(audio.duration);
+  });
+
+  audio.addEventListener('timeupdate', () => {
+    if (!audio.duration) return;
+    progress.value = (audio.currentTime / audio.duration) * 100;
+    currentTime.textContent = formatTime(audio.currentTime);
+  });
+
+  progress.addEventListener('input', () => {
+    if (!audio.duration) return;
+    audio.currentTime = (progress.value / 100) * audio.duration;
+    currentTime.textContent = formatTime(audio.currentTime);
+  });
+
+  volume.addEventListener('input', () => {
+    currentVolume = Number(volume.value);
+    audio.volume = currentVolume;
+  });
+
+  audio.addEventListener('play', async () => {
+    initEqualizer();
+    if (eqContext && eqContext.state === 'suspended') {
+      try { await eqContext.resume(); } catch (_error) {}
+    }
+    setPlayPauseLabel();
+  });
+  audio.addEventListener('pause', setPlayPauseLabel);
+
+  audio.addEventListener('ended', () => nextBtn.click());
+
+  if (!audio.paused) {
+    initEqualizer();
+    if (eqContext && eqContext.state === 'suspended') {
+      try { await eqContext.resume(); } catch (_error) {}
+    }
+  }
+
+  setPlayPauseLabel();
+  renderQueue();
+  renderRecentSongCards();
+  syncQueueCardHeight();
+  window.addEventListener('resize', syncQueueCardHeight);
+
+  const cover = document.getElementById('songCover');
+  if (cover) {
+    cover.addEventListener('load', syncQueueCardHeight);
+  }
 });
 
