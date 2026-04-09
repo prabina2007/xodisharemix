@@ -4869,11 +4869,17 @@ textarea.input,
 
 /* hero title color + x emphasis */
 .xodi-home .xodi-hero-copy h1 {
-  background: linear-gradient(90deg, #f2fff7 0%, #c9ffe6 32%, #8bffd1 66%, #2ee77a 100%);
+  display: inline-block;
+  padding-right: 0.06em;
+  line-height: 0.98;
+  background: linear-gradient(90deg, #f2fff7 0%, #d4ffe9 34%, #97ffd6 68%, #39ea83 96%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
-  text-shadow: 0 8px 24px rgba(46, 231, 122, 0.26);
+  text-shadow: 0 8px 24px rgba(46, 231, 122, 0.22);
   letter-spacing: -0.02em;
   font-weight: 800;
 }
