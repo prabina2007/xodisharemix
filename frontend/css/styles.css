@@ -4866,3 +4866,22 @@ textarea.input,
   }
 }
 
+
+/* hero title color + x emphasis */
+.xodi-home .xodi-hero-copy h1 {
+  background: linear-gradient(90deg, #6ee7ff 0%, #22d3ee 28%, #22c55e 54%, #facc15 78%, #fb7185 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 6px 24px rgba(34, 211, 238, 0.25);
+  letter-spacing: -0.02em;
+}
+
+.xodi-home .xodi-hero-copy h1 .hero-x {
+  display: inline-block;
+  font-size: 1.16em;
+  line-height: 0.9;
+  margin-right: 0.01em;
+  transform: translateY(0.02em);
+  text-shadow: 0 8px 28px rgba(34, 197, 94, 0.38);
+}

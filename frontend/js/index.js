@@ -130,6 +130,30 @@ const loadHomepage = async (search = '') => {
 };
 
 window.addEventListener('DOMContentLoaded', () => {
+  const heroVideo = document.querySelector('.xodi-hero-video');
+  if (heroVideo) {
+    heroVideo.muted = true;
+    heroVideo.loop = true;
+    heroVideo.autoplay = true;
+    heroVideo.playsInline = true;
+
+    const ensurePlay = () => {
+      const p = heroVideo.play();
+      if (p && typeof p.catch === 'function') p.catch(() => {});
+    };
+
+    heroVideo.addEventListener('canplay', ensurePlay, { once: true });
+    heroVideo.addEventListener('ended', () => {
+      heroVideo.currentTime = 0;
+      ensurePlay();
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && heroVideo.paused) ensurePlay();
+    });
+
+    ensurePlay();
+  }
   loadHomepage();
 
   const searchInput = document.getElementById('searchSong');
@@ -156,4 +180,5 @@ window.addEventListener('DOMContentLoaded', () => {
   const cta = document.getElementById('ctaCreate');
   if (cta) cta.addEventListener('click', () => (window.location.href = '/login.html'));
 });
+
 
