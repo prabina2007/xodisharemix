@@ -4890,3 +4890,47 @@ textarea.input,
   letter-spacing: 0;
 }
 
+
+
+/* queue overlap fix */
+.player-page .queue-card-clean .queue-list {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.player-page .queue-card-clean .queue-item {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  min-height: auto;
+  height: auto;
+  padding: 10px 12px;
+  overflow: hidden;
+}
+
+.player-page .queue-card-clean .queue-item strong {
+  display: block;
+  margin: 0;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.player-page .queue-card-clean .queue-item small {
+  display: block;
+  margin: 0;
+  line-height: 1.32;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (max-width: 900px) {
+  .player-page .queue-card-clean .queue-item {
+    min-height: auto;
+    padding: 9px 10px;
+    gap: 5px;
+  }
+}
