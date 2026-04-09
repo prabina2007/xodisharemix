@@ -4878,11 +4878,9 @@ textarea.input,
   font-weight: 800;
 }
 
-.xodi-home .xodi-hero-copy h1 .hero-x {
-  display: inline-block;
+
+.xodi-home .xodi-hero-copy h1::first-letter {
   font-size: 1.08em;
-  line-height: 0.95;
-  margin-right: 0.01em;
-  transform: translateY(0.01em);
-  text-shadow: 0 8px 22px rgba(46, 231, 122, 0.34);
+  letter-spacing: 0;
 }
+
