@@ -1517,7 +1517,7 @@ a {
   font-weight: 500;
 }
 
-.has-mini-corner-player {
+.has-mini-corner-player .site-footer {
   padding-bottom: 120px;
 }
 
@@ -1961,7 +1961,7 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .has-mini-corner-player {
+  .has-mini-corner-player .site-footer {
     padding-bottom: 150px;
   }
 
